@@ -1,0 +1,3445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniNext Admin | Property Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --danger: #e63946;
+            --success: #4CAF50;
+            --warning: #ffb703;
+            --dark: #212529;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --sidebar-width: 250px;
+            --header-height: 70px;
+            --radius: 8px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .sidebar,
+        body.dark-mode .header,
+        body.dark-mode .stat-card,
+        body.dark-mode .table-container,
+        body.dark-mode .modal-content,
+        body.dark-mode .property-card,
+        body.dark-mode .stat-box {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            border-color: #333;
+        }
+
+        body.dark-mode .nav-item {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .nav-item:hover,
+        body.dark-mode .nav-item.active {
+            background-color: rgba(67, 97, 238, 0.2);
+            color: #8ab4f8;
+        }
+
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background-color: #2d2d2d;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        body.dark-mode table.dataTable thead th {
+            background-color: #252525;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode table.dataTable tbody td {
+            border-color: #333;
+        }
+
+        body.dark-mode .btn-outline {
+            border-color: #4361ee;
+            color: #4361ee;
+        }
+
+        body.dark-mode .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        body.dark-mode .image-preview {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-mode .checkbox-item label {
+            color: #e0e0e0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: white;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .sidebar-header {
+            padding: 25px 20px;
+            border-bottom: 1px solid var(--light-gray);
+            text-align: center;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .admin-logo i {
+            font-size: 24px;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background-color: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item span {
+            font-weight: 500;
+        }
+
+        .notification-badge {
+            position: absolute;
+            right: 20px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: var(--transition);
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background: white;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 90;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .mobile-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            display: none;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .admin-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .admin-details h4 {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .admin-details p {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: #c1121f;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 30px;
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        /* Dashboard Overview */
+        .dashboard-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.properties { background: var(--primary); }
+        .stat-icon.bookings { background: var(--success); }
+        .stat-icon.pending { background: var(--warning); }
+        .stat-icon.students { background: var(--secondary); }
+
+        .stat-info h3 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Table Container */
+        .table-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #3d8b40;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e6a500;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #d32f2f;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        /* DataTables Customization */
+        table.dataTable {
+            width: 100% !important;
+            border-collapse: collapse !important;
+        }
+
+        table.dataTable thead th {
+            background-color: var(--light);
+            border-bottom: 2px solid var(--light-gray);
+            font-weight: 600;
+            padding: 15px 10px;
+        }
+
+        table.dataTable tbody td {
+            padding: 15px 10px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        table.dataTable tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
+        .status-available { background: #d1ecf1; color: #0c5460; }
+        .status-booked { background: #d6d8d9; color: #383d41; }
+        .status-verified { background: #d4edda; color: #155724; }
+        .status-unverified { background: #fff3cd; color: #856404; }
+        .status-maintenance { background: #ffe5d0; color: #e65100; }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            color: white;
+            transition: var(--transition);
+        }
+
+        .action-btn.view { background: var(--primary); }
+        .action-btn.edit { background: var(--warning); }
+        .action-btn.delete { background: var(--danger); }
+        .action-btn.approve { background: var(--success); }
+        .action-btn.reject { background: var(--danger); }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input {
+            width: auto;
+        }
+
+        /* Image Upload Preview */
+        .image-upload-container {
+            margin-top: 10px;
+        }
+
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .preview-image {
+            position: relative;
+            height: 100px;
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-box h4 {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .stat-box .amount {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Property Grid */
+        .property-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .property-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .property-image {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .property-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .property-status.available { background: var(--success); }
+        .property-status.booked { background: var(--danger); }
+        .property-status.maintenance { background: var(--warning); }
+
+        .property-content {
+            padding: 20px;
+        }
+
+        .property-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .property-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .property-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .property-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 0 15px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .table-actions {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+
+            .property-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Image Upload Actions */
+        .image-upload-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .image-upload-actions .btn {
+            flex: 1;
+        }
+
+        /* Uploaded Images Grid */
+        .uploaded-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .uploaded-image-item {
+            position: relative;
+            height: 120px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .uploaded-image-item:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+
+        .uploaded-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .uploaded-image-actions {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .uploaded-image-item:hover .uploaded-image-actions {
+            opacity: 1;
+        }
+
+        .uploaded-image-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .uploaded-image-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .uploaded-image-btn.delete {
+            background: var(--danger);
+        }
+
+        .uploaded-image-btn.view {
+            background: var(--primary);
+        }
+
+        /* Preview Lightbox */
+        .image-lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .image-lightbox.show {
+            display: flex;
+        }
+
+        .lightbox-image {
+            max-width: 90%;
+            max-height: 80%;
+            object-fit: contain;
+            border-radius: var(--radius);
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-caption {
+            color: white;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 2001;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(-50%);
+        }
+
+        .lightbox-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            transition: background 0.3s ease;
+        }
+
+        .lightbox-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .lightbox-counter {
+            color: white;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        /* Dark mode adjustments */
+        body.dark-mode .image-preview,
+        body.dark-mode .uploaded-images-grid {
+            background-color: #2d2d2d;
+        }
+
+        body.dark-mode .no-images {
+            color: #b0b0b0;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 500;
+            z-index: 9999;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow);
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">
+                <i class="fas fa-home"></i>
+                <span>UniNext Admin</span>
+            </div>
+        </div>
+        
+        <div class="nav-menu">
+            <div class="nav-item active" data-tab="dashboard">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" data-tab="properties">
+                <i class="fas fa-building"></i>
+                <span>Properties</span>
+            </div>
+            <div class="nav-item" data-tab="bookings">
+                <i class="fas fa-calendar-check"></i>
+                <span>Booking Requests</span>
+                <span class="notification-badge" id="pendingCount">0</span>
+            </div>
+            <div class="nav-item" data-tab="students">
+                <i class="fas fa-users"></i>
+                <span>Students</span>
+            </div>
+            <div class="nav-item" data-tab="payments">
+                <i class="fas fa-credit-card"></i>
+                <span>Payments</span>
+            </div>
+            <div class="nav-item" data-tab="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Admin Dashboard</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="admin-info">
+                    <div class="admin-avatar">A</div>
+                    <div class="admin-details">
+                        <h4>Admin User</h4>
+                        <p>Super Administrator</p>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline" id="darkModeToggle">
+                    <i class="fas fa-moon"></i> Dark Mode
+                </button>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-overview">
+                    <div class="stat-card">
+                        <div class="stat-icon properties">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalProperties">0</h3>
+                            <p>Total Properties</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon bookings">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pendingRequests">0</h3>
+                            <p>Pending Requests</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon students">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Verified Students</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Recent Booking Requests</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="viewAllBookings">
+                                <i class="fas fa-list"></i> View All
+                            </button>
+                        </div>
+                    </div>
+                    <table id="recentBookingsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student</th>
+                                <th>Property</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentBookingsBody">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Properties Needing Attention</h2>
+                    </div>
+                    <div class="property-grid" id="attentionProperties">
+                        <!-- Filled by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Tab -->
+            <div id="properties" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Property Management</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" id="addPropertyBtn">
+                                <i class="fas fa-plus"></i> Add New Property
+                            </button>
+                        </div>
+                    </div>
+                    <table id="propertiesTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Property Name</th>
+                                <th>Type</th>
+                                <th>Location</th>
+                                <th>Price/Year</th>
+                                <th>Status</th>
+                                <th>Rooms</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="propertiesBody">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div id="bookings" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Booking Request Management</h2>
+                        <div class="table-actions">
+                            <select id="bookingFilter" class="form-control" style="width: 200px;">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table id="bookingsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Student</th>
+                                <th>Property</th>
+                                <th>Move-in Date</th>
+                                <th>Requested</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsBody">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Students Tab -->
+            <div id="students" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Student Management</h2>
+                        <div class="table-actions">
+                            <input type="text" id="studentSearch" placeholder="Search students..." class="form-control" style="width: 250px;">
+                        </div>
+                    </div>
+                    <table id="studentsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>University</th>
+                                <th>Department</th>
+                                <th>Level</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsBody">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Payments Tab -->
+            <div id="payments" class="tab-content">
+                <div class="dashboard-overview" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success);">
+                            <i class="fas fa-money-check-alt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalRevenue">₦0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary);">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="monthRevenue">₦0</h3>
+                            <p>This Month</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning);">
+                            <i class="fas fa-exclamation-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="pendingPayments">₦0</h3>
+                            <p>Pending Payments</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Payment Records</h2>
+                    </div>
+                    <table id="paymentsTable" class="display" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Student</th>
+                                <th>Property</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsBody">
+                            <!-- Filled by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Admin Settings</h2>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div class="form-group">
+                            <label for="adminName">Admin Name</label>
+                            <input type="text" id="adminName" class="form-control" value="Admin User">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminEmail">Admin Email</label>
+                            <input type="email" id="adminEmail" class="form-control" value="admin@uninext.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminPassword">Change Password</label>
+                            <input type="password" id="adminPassword" class="form-control" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary" id="saveSettings">
+                                <i class="fas fa-save"></i> Save Settings
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Property Modal -->
+    <div class="modal" id="propertyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="propertyModalTitle">Add New Property</h3>
+                <button class="modal-close" data-modal="propertyModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="propertyForm">
+                    <input type="hidden" id="propertyId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="propertyName">Property Name *</label>
+                            <input type="text" id="propertyName" required placeholder="e.g., Golden Apartments">
+                        </div>
+                        <div class="form-group">
+                            <label for="propertyType">Property Type *</label>
+                            <select id="propertyType" required>
+                                <option value="">Select Type</option>
+                                <option value="shared">Shared Room</option>
+                                <option value="private">Private Room</option>
+                                <option value="studio">Studio Apartment</option>
+                                <option value="1bedroom">1-Bedroom Apartment</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="priceYear">Price Per Year (₦) *</label>
+                            <input type="number" id="priceYear" required min="50000" max="500000" placeholder="e.g., 120000">
+                        </div>
+                        <div class="form-group">
+                            <label for="genderCategory">Gender Category *</label>
+                            <select id="genderCategory" required>
+                                <option value="male">Male Only</option>
+                                <option value="female">Female Only</option>
+                                <option value="mixed">Mixed (Co-ed)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input type="text" id="location" required placeholder="e.g., 5 mins to UNILAG Gate">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Property Description</label>
+                        <textarea id="description" placeholder="Describe the property, amenities, neighborhood..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Amenities</label>
+                        <div class="checkbox-group" id="amenitiesContainer">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="wifi" value="Wi-Fi">
+                                <label for="wifi">Wi-Fi</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="security" value="24/7 Security">
+                                <label for="security">24/7 Security</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="laundry" value="Laundry">
+                                <label for="laundry">Laundry</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="kitchen" value="Kitchen">
+                                <label for="kitchen">Kitchen</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ac" value="AC/Fan">
+                                <label for="ac">AC/Fan</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="desk" value="Study Desk">
+                                <label for="desk">Study Desk</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="totalRooms">Total Rooms *</label>
+                            <input type="number" id="totalRooms" required min="1" max="10" placeholder="e.g., 4">
+                        </div>
+                        <div class="form-group">
+                            <label for="availableRooms">Available Rooms *</label>
+                            <input type="number" id="availableRooms" required min="0" max="10" placeholder="e.g., 2">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Property Images</label>
+                        <div class="image-upload-container">
+                            <div class="image-preview" id="imagePreview">
+                                <div class="no-images" id="noImagesMessage" style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--gray);">
+                                    <i class="fas fa-images" style="font-size: 48px; margin-bottom: 10px;"></i>
+                                    <p>No images uploaded yet. Click "Add Images" to upload property photos.</p>
+                                </div>
+                            </div>
+                            <div class="image-upload-actions">
+                                <input type="file" id="propertyImages" multiple accept="image/*" style="display: none;">
+                                <button type="button" class="btn btn-outline" id="addImagesBtn">
+                                    <i class="fas fa-plus"></i> Add Images
+                                </button>
+                                <button type="button" class="btn btn-outline" id="clearImagesBtn">
+                                    <i class="fas fa-trash"></i> Clear All
+                                </button>
+                            </div>
+                            <small style="color: var(--gray); margin-top: 5px; display: block;">Upload up to 10 images (Max 5MB each)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="uploadedImagesSection" style="display: none;">
+                        <label>Previously Uploaded Images</label>
+                        <div class="uploaded-images-grid" id="uploadedImagesGrid">
+                            <!-- Previously uploaded images will be shown here -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="saveProperty">Save Property</button>
+                <button class="btn btn-outline" data-modal="propertyModal">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Lightbox Modal -->
+    <div class="image-lightbox" id="imageLightbox">
+        <button class="lightbox-close" id="closeLightbox">&times;</button>
+        <div class="lightbox-nav">
+            <button class="lightbox-nav-btn" id="prevImage">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-nav-btn" id="nextImage">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <img class="lightbox-image" id="lightboxImage" alt="Property Image">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
+    </div>
+
+    <!-- View Booking Modal -->
+    <div class="modal" id="viewBookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Booking Request Details</h3>
+                <button class="modal-close" data-modal="viewBookingModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="bookingDetails">
+                    <!-- Filled by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" id="approveBooking">Approve</button>
+                <button class="btn btn-danger" id="rejectBooking">Reject</button>
+                <button class="btn btn-outline" data-modal="viewBookingModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Student Modal -->
+    <div class="modal" id="viewStudentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Student Details</h3>
+                <button class="modal-close" data-modal="viewStudentModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="studentDetails">
+                    <!-- Filled by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" id="verifyStudent">Verify Student</button>
+                <button class="btn btn-outline" data-modal="viewStudentModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+        <script>
+        // Data Storage Keys
+        const STORAGE_KEYS = {
+            PROPERTIES: 'uniNextProperties',
+            BOOKINGS: 'uniNextBookings',
+            STUDENTS: 'uniNextStudents',
+            PAYMENTS: 'uniNextPayments',
+            ADMIN_SETTINGS: 'uniNextAdminSettings'
+        };
+
+        // Initialize Data
+        let properties = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROPERTIES)) || [];
+        let bookings = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS)) || [];
+        let students = JSON.parse(localStorage.getItem(STORAGE_KEYS.STUDENTS)) || [];
+        let payments = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS)) || [];
+
+        // Image Lightbox variables
+        let currentLightboxImages = [];
+        let currentLightboxIndex = 0;
+
+        // Initialize the admin dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with sample data if empty
+            initializeSampleData();
+            
+            // Load dark mode preference
+            loadDarkMode();
+            
+            // Load data
+            loadDashboardData();
+            loadProperties();
+            loadBookings();
+            loadStudents();
+            loadPayments();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Initialize DataTables
+            initializeDataTables();
+            
+            // Initialize mobile menu
+            initMobileMenu();
+            
+            // Sync with student registration data
+            syncStudentData();
+        });
+
+        // Get students from user registration data
+        function getStudentsFromUserData() {
+            try {
+                const storedUsers = JSON.parse(localStorage.getItem('uniNextUsers')) || [];
+                const users = Array.isArray(storedUsers) ? storedUsers : [storedUsers].filter(Boolean);
+                
+                if (users.length === 0) return [];
+                
+                return users.map((user, index) => ({
+                    id: user.id || `STU-${String(index + 1).padStart(3, '0')}`,
+                    name: user.fullName || 'Student',
+                    email: user.email || 'student@school.edu',
+                    phone: user.phone || '+234 800 000 0000',
+                    university: user.university || 'University',
+                    department: user.department || 'Not specified',
+                    level: user.level || '100L',
+                    status: user.status || 'pending',
+                    profileImage: localStorage.getItem(`uniNextUserPhoto_${user.email}`) || null,
+                    registered: user.createdAt || new Date().toISOString().split('T')[0],
+                    verified: user.verified || null
+                }));
+            } catch (error) {
+                console.error('Error getting student data:', error);
+                return [];
+            }
+        }
+
+        // Initialize sample data if empty
+        function initializeSampleData() {
+            // Initialize properties if empty
+            if (properties.length === 0) {
+                properties = [
+                    {
+                        id: "PROP-001",
+                        name: "Golden Apartments",
+                        type: "Private Room",
+                        location: "5 mins to UNILAG Gate",
+                        price: 120000,
+                        status: "available",
+                        totalRooms: 4,
+                        availableRooms: 2,
+                        gender: "Female Only",
+                        amenities: ["Wi-Fi", "24/7 Security", "Study Desk"],
+                        images: [
+                            "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+                            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        ],
+                        description: "Modern apartment located just 5 minutes walking distance from campus.",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    },
+                    {
+                        id: "PROP-002",
+                        name: "Student Hub Hostel",
+                        type: "Shared Room",
+                        location: "10 mins to UI",
+                        price: 80000,
+                        status: "available",
+                        totalRooms: 6,
+                        availableRooms: 3,
+                        gender: "Male Only",
+                        amenities: ["Wi-Fi", "Laundry", "Study Desk"],
+                        images: [
+                            "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                        ],
+                        description: "Vibrant student community residence with excellent amenities.",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
+            }
+            
+            // Initialize students if empty
+            if (students.length === 0) {
+                const userStudents = getStudentsFromUserData();
+                if (userStudents.length > 0) {
+                    students = userStudents;
+                    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+                } else {
+                    // Add sample student if no user data
+                    students = [
+                        {
+                            id: "STU-001",
+                            name: "Demo Student",
+                            email: "demo.student@unilag.edu",
+                            phone: "+234 810 123 4567",
+                            university: "University of Lagos",
+                            department: "Computer Science",
+                            level: "300L",
+                            status: "verified",
+                            profileImage: null,
+                            registered: new Date().toISOString().split('T')[0],
+                            verified: new Date().toISOString().split('T')[0]
+                        }
+                    ];
+                    localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+                }
+            }
+            
+            // Initialize bookings if empty
+            if (bookings.length === 0 && students.length > 0 && properties.length > 0) {
+                bookings = [
+                    {
+                        id: "BOOK-001",
+                        studentId: students[0].id,
+                        studentName: students[0].name,
+                        studentEmail: students[0].email,
+                        studentPhone: students[0].phone,
+                        propertyId: properties[0].id,
+                        propertyName: properties[0].name,
+                        moveInDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                        requestedDate: new Date().toISOString().split('T')[0],
+                        amount: properties[0].price,
+                        status: "pending",
+                        notes: "Early move-in requested",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+            }
+            
+            // Initialize payments if empty
+            if (payments.length === 0 && bookings.length > 0) {
+                const approvedBookings = bookings.filter(b => b.status === 'approved');
+                payments = approvedBookings.map(booking => ({
+                    id: `PAY-${booking.id}`,
+                    bookingId: booking.id,
+                    studentId: booking.studentId,
+                    studentName: booking.studentName,
+                    propertyId: booking.propertyId,
+                    propertyName: booking.propertyName,
+                    amount: booking.amount,
+                    date: new Date().toISOString().split('T')[0],
+                    method: 'Bank Transfer',
+                    status: 'completed',
+                    receipt: null,
+                    createdAt: new Date().toISOString()
+                }));
+                localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
+            }
+        }
+
+        // Sync student data with user registration
+        function syncStudentData() {
+            try {
+                const userStudents = getStudentsFromUserData();
+                
+                // Create a map of existing students by email
+                const studentMap = new Map();
+                students.forEach(student => {
+                    if (student.email) {
+                        studentMap.set(student.email, student);
+                    }
+                });
+                
+                // Add or update with user students
+                userStudents.forEach(userStudent => {
+                    if (userStudent.email) {
+                        if (studentMap.has(userStudent.email)) {
+                            // Merge data, preserving admin data
+                            const existing = studentMap.get(userStudent.email);
+                            studentMap.set(userStudent.email, {
+                                ...existing,
+                                name: userStudent.name || existing.name,
+                                department: userStudent.department || existing.department,
+                                level: userStudent.level || existing.level,
+                                profileImage: userStudent.profileImage || existing.profileImage
+                            });
+                        } else {
+                            // Add new student
+                            studentMap.set(userStudent.email, userStudent);
+                        }
+                    }
+                });
+                
+                students = Array.from(studentMap.values());
+                localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+            } catch (error) {
+                console.error('Error syncing student data:', error);
+            }
+        }
+
+        // Initialize DataTables
+        function initializeDataTables() {
+            // Properties table
+            $('#propertiesTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                order: [[0, 'desc']]
+            });
+            
+            // Bookings table
+            $('#bookingsTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                order: [[4, 'desc']]
+            });
+            
+            // Students table
+            $('#studentsTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                order: [[0, 'desc']]
+            });
+            
+            // Payments table
+            $('#paymentsTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                order: [[4, 'desc']]
+            });
+            
+            // Recent bookings table
+            $('#recentBookingsTable').DataTable({
+                pageLength: 5,
+                searching: false,
+                paging: false,
+                info: false,
+                order: [[3, 'desc']]
+            });
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            try {
+                // Update stats
+                document.getElementById('totalProperties').textContent = properties.length;
+                document.getElementById('totalBookings').textContent = bookings.length;
+                
+                const verifiedStudents = students.filter(s => s.status === 'verified').length;
+                document.getElementById('totalStudents').textContent = verifiedStudents;
+                
+                // Count pending bookings
+                const pendingBookings = bookings.filter(b => b.status === 'pending').length;
+                document.getElementById('pendingRequests').textContent = pendingBookings;
+                document.getElementById('pendingCount').textContent = pendingBookings;
+                
+                // Calculate revenue
+                const totalRevenue = payments
+                    .filter(p => p.status === 'completed')
+                    .reduce((sum, p) => sum + (p.amount || 0), 0);
+                const pendingPayments = payments
+                    .filter(p => p.status === 'pending')
+                    .reduce((sum, p) => sum + (p.amount || 0), 0);
+                
+                document.getElementById('totalRevenue').textContent = `₦${totalRevenue.toLocaleString()}`;
+                document.getElementById('pendingPayments').textContent = `₦${pendingPayments.toLocaleString()}`;
+                
+                // This month revenue
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                const monthRevenue = payments
+                    .filter(p => p.status === 'completed')
+                    .filter(p => {
+                        try {
+                            const paymentDate = new Date(p.date);
+                            return paymentDate.getMonth() === currentMonth && 
+                                   paymentDate.getFullYear() === currentYear;
+                        } catch {
+                            return false;
+                        }
+                    })
+                    .reduce((sum, p) => sum + (p.amount || 0), 0);
+                document.getElementById('monthRevenue').textContent = `₦${Math.round(monthRevenue).toLocaleString()}`;
+                
+                // Load recent bookings
+                loadRecentBookings();
+                
+                // Load properties needing attention
+                loadAttentionProperties();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Load recent bookings
+        function loadRecentBookings() {
+            const tbody = document.getElementById('recentBookingsBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            try {
+                // Get recent bookings (last 5)
+                const recentBookings = [...bookings]
+                    .sort((a, b) => new Date(b.requestedDate || 0) - new Date(a.requestedDate || 0))
+                    .slice(0, 5);
+                
+                recentBookings.forEach(booking => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${booking.id || 'N/A'}</td>
+                        <td>${booking.studentName || 'N/A'}</td>
+                        <td>${booking.propertyName || 'N/A'}</td>
+                        <td>${formatDate(booking.moveInDate)}</td>
+                        <td>₦${(booking.amount || 0).toLocaleString()}</td>
+                        <td><span class="status-badge status-${booking.status || 'pending'}">${(booking.status || 'pending').toUpperCase()}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewBooking('${booking.id}')" title="View Details">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${booking.status === 'pending' ? `
+                                <button class="action-btn approve" onclick="updateBookingStatus('${booking.id}', 'approved')" title="Approve">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="action-btn reject" onclick="updateBookingStatus('${booking.id}', 'rejected')" title="Reject">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading recent bookings:', error);
+            }
+        }
+
+        // Load properties needing attention
+        function loadAttentionProperties() {
+            const container = document.getElementById('attentionProperties');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            try {
+                // Find properties with low availability or issues
+                const attentionNeeded = properties.filter(p => 
+                    p.availableRooms === 0 || p.status === 'maintenance'
+                );
+                
+                if (attentionNeeded.length === 0) {
+                    container.innerHTML = '<p style="color: var(--gray); padding: 20px; text-align: center;">All properties are in good condition!</p>';
+                    return;
+                }
+                
+                attentionNeeded.forEach(property => {
+                    const card = document.createElement('div');
+                    card.className = 'property-card';
+                    
+                    let issue = '';
+                    let statusClass = '';
+                    if (property.availableRooms === 0) {
+                        issue = 'Fully Booked';
+                        statusClass = 'booked';
+                    } else if (property.status === 'maintenance') {
+                        issue = 'Maintenance Required';
+                        statusClass = 'maintenance';
+                    }
+                    
+                    // Create image container
+                    const imageContainer = document.createElement('div');
+                    imageContainer.className = 'property-image';
+                    
+                    if (property.images && property.images.length > 0) {
+                        const img = document.createElement('img');
+                        img.src = property.images[0];
+                        img.alt = property.name;
+                        img.style.cursor = 'pointer';
+                        img.onclick = () => {
+                            if (property.images && property.images.length > 0) {
+                                showImageInLightbox(property.images, 0);
+                            }
+                        };
+                        imageContainer.appendChild(img);
+                    } else {
+                        imageContainer.style.background = 'linear-gradient(135deg, var(--primary), var(--secondary))';
+                        imageContainer.style.display = 'flex';
+                        imageContainer.style.alignItems = 'center';
+                        imageContainer.style.justifyContent = 'center';
+                        imageContainer.style.color = 'white';
+                        imageContainer.innerHTML = '<i class="fas fa-home" style="font-size: 48px;"></i>';
+                    }
+                    
+                    // Create status badge
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = `property-status ${statusClass}`;
+                    statusDiv.textContent = issue;
+                    imageContainer.appendChild(statusDiv);
+                    card.appendChild(imageContainer);
+                    
+                    // Content
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'property-content';
+                    
+                    const title = document.createElement('h3');
+                    title.className = 'property-title';
+                    title.textContent = property.name || 'Unnamed Property';
+                    contentDiv.appendChild(title);
+
+                    const price = document.createElement('div');
+                    price.className = 'property-price';
+                    price.textContent = `₦${(property.price || 0).toLocaleString()}/year`;
+                    contentDiv.appendChild(price);
+                    
+                    const detailsDiv = document.createElement('div');
+                    detailsDiv.className = 'property-details';
+                    detailsDiv.innerHTML = `
+                        <div class="property-detail"><i class="fas fa-home"></i><span>${property.type || 'N/A'}</span></div>
+                        <div class="property-detail"><i class="fas fa-users"></i><span>${property.gender || 'N/A'}</span></div>
+                        <div class="property-detail"><i class="fas fa-door-open"></i><span>${property.availableRooms || 0}/${property.totalRooms || 0} rooms</span></div>
+                    `;
+                    contentDiv.appendChild(detailsDiv);
+                    
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'property-actions';
+                    actionsDiv.innerHTML = `
+                        <button class="btn btn-primary btn-sm" onclick="editProperty('${property.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-warning btn-sm" onclick="addRooms('${property.id}')">
+                            <i class="fas fa-plus"></i> Add Rooms
+                        </button>
+                    `;
+                    contentDiv.appendChild(actionsDiv);
+                    
+                    card.appendChild(contentDiv);
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading attention properties:', error);
+                container.innerHTML = '<p style="color: var(--danger); padding: 20px; text-align: center;">Error loading properties</p>';
+            }
+        }
+
+        // Load properties
+        function loadProperties() {
+            const tbody = document.getElementById('propertiesBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            try {
+                properties.forEach(property => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${property.id || 'N/A'}</td>
+                        <td>${property.name || 'Unnamed Property'}</td>
+                        <td>${property.type || 'N/A'}</td>
+                        <td>${property.location || 'N/A'}</td>
+                        <td>₦${(property.price || 0).toLocaleString()}</td>
+                        <td><span class="status-badge status-${property.status || 'available'}">${(property.status || 'available').toUpperCase()}</span></td>
+                        <td>${property.availableRooms || 0}/${property.totalRooms || 0}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewPropertyDetails('${property.id}')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn edit" onclick="editProperty('${property.id}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="deleteProperty('${property.id}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                // Refresh DataTable
+                $('#propertiesTable').DataTable().destroy();
+                $('#propertiesTable').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    order: [[0, 'desc']]
+                });
+            } catch (error) {
+                console.error('Error loading properties:', error);
+            }
+        }
+
+        // Load bookings
+function loadBookings() {
+    // Always refresh bookings from localStorage
+    bookings = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS)) || [];
+    
+    const tbody = document.getElementById('bookingsBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
+    
+    try {
+        if (bookings.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px;">No booking requests found</td></tr>';
+        } else {
+            bookings.forEach(booking => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.id || 'N/A'}</td>
+                    <td>${booking.studentName || 'N/A'}</td>
+                    <td>${booking.propertyName || 'N/A'}</td>
+                    <td>${formatDate(booking.moveInDate)}</td>
+                    <td>${formatDate(booking.requestedDate)}</td>
+                    <td>₦${(booking.amount || 0).toLocaleString()}</td>
+                    <td><span class="status-badge status-${booking.status || 'pending'}">${(booking.status || 'pending').toUpperCase()}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewBooking('${booking.id}')" title="View">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${booking.status === 'pending' ? `
+                            <button class="action-btn approve" onclick="updateBookingStatus('${booking.id}', 'approved')" title="Approve">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="action-btn reject" onclick="updateBookingStatus('${booking.id}', 'rejected')" title="Reject">
+                                <i class="fas fa-times"></i>
+                            </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Refresh DataTable if it exists
+        if ($.fn.DataTable.isDataTable('#bookingsTable')) {
+            $('#bookingsTable').DataTable().destroy();
+        }
+        $('#bookingsTable').DataTable({
+            pageLength: 10,
+            responsive: true,
+            order: [[4, 'desc']]
+        });
+    } catch (error) {
+        console.error('Error loading bookings:', error);
+    }
+}
+
+        // Load students
+        function loadStudents() {
+            const tbody = document.getElementById('studentsBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            try {
+                students.forEach(student => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${student.id || 'N/A'}</td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                ${student.profileImage ? 
+                                    `<img src="${student.profileImage}" alt="${student.name}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">` : 
+                                    `<div style="width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                        ${student.name ? student.name.charAt(0) : 'S'}
+                                    </div>`
+                                }
+                                ${student.name || 'N/A'}
+                            </div>
+                        </td>
+                        <td>${student.email || 'N/A'}</td>
+                        <td>${student.phone || 'N/A'}</td>
+                        <td>${student.university || 'N/A'}</td>
+                        <td>${student.department || 'N/A'}</td>
+                        <td>${student.level || 'N/A'}</td>
+                        <td><span class="status-badge status-${student.status || 'pending'}">${(student.status || 'pending').toUpperCase()}</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" onclick="viewStudent('${student.id}')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${student.status === 'pending' ? `
+                                <button class="action-btn approve" onclick="verifyStudent('${student.id}')" title="Verify">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                ` : ''}
+                                <button class="action-btn delete" onclick="deleteStudent('${student.id}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                // Refresh DataTable
+                $('#studentsTable').DataTable().destroy();
+                $('#studentsTable').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    order: [[0, 'desc']]
+                });
+            } catch (error) {
+                console.error('Error loading students:', error);
+            }
+        }
+
+        // Load payments
+        function loadPayments() {
+            const tbody = document.getElementById('paymentsBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            try {
+                payments.forEach(payment => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${payment.id || 'N/A'}</td>
+                        <td>${payment.studentName || 'N/A'}</td>
+                        <td>${payment.propertyName || 'N/A'}</td>
+                        <td>₦${(payment.amount || 0).toLocaleString()}</td>
+                        <td>${formatDate(payment.date)}</td>
+                        <td>${payment.method || 'N/A'}</td>
+                        <td><span class="status-badge status-${payment.status || 'pending'}">${(payment.status || 'pending').toUpperCase()}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                // Refresh DataTable
+                $('#paymentsTable').DataTable().destroy();
+                $('#paymentsTable').DataTable({
+                    pageLength: 10,
+                    responsive: true,
+                    order: [[4, 'desc']]
+                });
+            } catch (error) {
+                console.error('Error loading payments:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const tab = this.getAttribute('data-tab');
+                    switchTab(tab);
+                });
+            });
+            
+            // Modal close buttons
+            document.querySelectorAll('.modal-close, .btn-outline[data-modal]').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modalId = this.getAttribute('data-modal');
+                    closeModal(modalId);
+                });
+            });
+            
+            // Add property button
+            document.getElementById('addPropertyBtn').addEventListener('click', function() {
+                document.getElementById('propertyModalTitle').textContent = 'Add New Property';
+                document.getElementById('propertyId').value = '';
+                document.getElementById('propertyForm').reset();
+                document.getElementById('uploadedImagesSection').style.display = 'none';
+                document.getElementById('uploadedImagesGrid').innerHTML = '';
+                resetImagePreview();
+                showModal('propertyModal');
+            });
+            
+            // Save property button
+            document.getElementById('saveProperty').addEventListener('click', saveProperty);
+            
+            // Image upload functionality
+            document.getElementById('addImagesBtn').addEventListener('click', function() {
+                document.getElementById('propertyImages').click();
+            });
+
+            document.getElementById('propertyImages').addEventListener('change', handleImageUpload);
+            
+            // Clear images button
+            document.getElementById('clearImagesBtn').addEventListener('click', resetImagePreview);
+            
+            // Booking filter
+            document.getElementById('bookingFilter').addEventListener('change', function() {
+                filterBookings(this.value);
+            });
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    window.location.href = 'index.html';
+                }
+            });
+            
+            // View all bookings
+            document.getElementById('viewAllBookings').addEventListener('click', function() {
+                switchTab('bookings');
+            });
+            
+            // Student search
+            document.getElementById('studentSearch').addEventListener('input', function(e) {
+                searchStudents(e.target.value);
+            });
+            
+            // Save settings
+            document.getElementById('saveSettings').addEventListener('click', saveSettings);
+            
+            // Approve booking button in modal
+            document.getElementById('approveBooking').addEventListener('click', function() {
+                const bookingId = document.getElementById('viewBookingModal').getAttribute('data-booking-id');
+                updateBookingStatus(bookingId, 'approved');
+            });
+            
+            // Reject booking button in modal
+            document.getElementById('rejectBooking').addEventListener('click', function() {
+                const bookingId = document.getElementById('viewBookingModal').getAttribute('data-booking-id');
+                updateBookingStatus(bookingId, 'rejected');
+            });
+            
+            // Verify student button in modal
+            document.getElementById('verifyStudent').addEventListener('click', function() {
+                const studentId = document.getElementById('viewStudentModal').getAttribute('data-student-id');
+                verifyStudent(studentId);
+            });
+            
+            // Dark mode toggle
+            document.getElementById('darkModeToggle').addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                this.innerHTML = isDark ? 
+                    '<i class="fas fa-sun"></i> Light Mode' : 
+                    '<i class="fas fa-moon"></i> Dark Mode';
+                localStorage.setItem('uniNextAdminDarkMode', isDark.toString());
+            });
+            
+            // Lightbox controls
+            document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+            document.getElementById('prevImage').addEventListener('click', prevImage);
+            document.getElementById('nextImage').addEventListener('click', nextImage);
+            
+            // Keyboard navigation for lightbox
+            document.addEventListener('keydown', function(e) {
+                const lightbox = document.getElementById('imageLightbox');
+                if (lightbox.classList.contains('show')) {
+                    if (e.key === 'Escape') {
+                        closeLightbox();
+                    } else if (e.key === 'ArrowLeft') {
+                        prevImage();
+                    } else if (e.key === 'ArrowRight') {
+                        nextImage();
+                    }
+                }
+            });
+            
+            // Close lightbox when clicking outside image
+            document.getElementById('imageLightbox').addEventListener('click', function(e) {
+                if (e.target === this || e.target.classList.contains('lightbox-close')) {
+                    closeLightbox();
+                }
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeModal(event.target.id);
+                }
+            });
+        }
+
+        // Initialize mobile menu
+        function initMobileMenu() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('show');
+                });
+                
+                // Close sidebar when clicking outside on mobile
+                document.addEventListener('click', function(event) {
+                    if (window.innerWidth <= 992) {
+                        if (!sidebar.contains(event.target) && !mobileToggle.contains(event.target)) {
+                            sidebar.classList.remove('show');
+                        }
+                    }
+                });
+            }
+        }
+
+        // Load dark mode preference
+        function loadDarkMode() {
+            const darkModeSetting = localStorage.getItem('uniNextAdminDarkMode');
+            if (darkModeSetting === 'true') {
+                document.body.classList.add('dark-mode');
+                const toggleBtn = document.getElementById('darkModeToggle');
+                if (toggleBtn) {
+                    toggleBtn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                }
+            }
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-tab') === tabName) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Update page title
+            const pageTitle = document.getElementById('pageTitle');
+            const tabNames = {
+                'dashboard': 'Admin Dashboard',
+                'properties': 'Property Management',
+                'bookings': 'Booking Requests',
+                'students': 'Student Management',
+                'payments': 'Payment Records',
+                'settings': 'Settings'
+            };
+            pageTitle.textContent = tabNames[tabName] || 'Admin Dashboard';
+            
+            // Show active tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+            
+            // Close mobile menu on tab switch
+            if (window.innerWidth <= 992) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.remove('show');
+                }
+            }
+        }
+
+        // Show modal
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Reset image preview
+        function resetImagePreview() {
+            const preview = document.getElementById('imagePreview');
+            if (!preview) return;
+            
+            preview.innerHTML = '';
+            const noImagesMsg = document.createElement('div');
+            noImagesMsg.className = 'no-images';
+            noImagesMsg.style.cssText = 'grid-column: 1/-1; text-align: center; padding: 20px; color: var(--gray);';
+            noImagesMsg.innerHTML = `
+                <i class="fas fa-images" style="font-size: 48px; margin-bottom: 10px;"></i>
+                <p>No images uploaded yet. Click "Add Images" to upload property photos.</p>
+            `;
+            preview.appendChild(noImagesMsg);
+            
+            // Clear file input
+            const fileInput = document.getElementById('propertyImages');
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        }
+
+        // Handle image upload
+        function handleImageUpload(e) {
+            const files = Array.from(e.target.files);
+            const preview = document.getElementById('imagePreview');
+            if (!preview) return;
+            
+            // Remove "no images" message
+            const noImagesMsg = preview.querySelector('.no-images');
+            if (noImagesMsg) {
+                noImagesMsg.remove();
+            }
+            
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) {
+                    showNotification('Please upload only image files', 'warning');
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    showNotification('Image size should be less than 5MB', 'warning');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'preview-image';
+                    previewDiv.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview">
+                        <button type="button" class="remove-image">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    // Add event listener for remove button
+                    const removeBtn = previewDiv.querySelector('.remove-image');
+                    removeBtn.addEventListener('click', function() {
+                        previewDiv.remove();
+                        
+                        // Show "no images" message if all images removed
+                        if (preview.children.length === 0) {
+                            resetImagePreview();
+                        }
+                    });
+                    
+                    preview.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+            
+            // Clear file input
+            e.target.value = '';
+        }
+
+        // Save property (add or edit)
+        function saveProperty() {
+            try {
+                // Get form values
+                const propertyId = document.getElementById('propertyId').value;
+                const propertyName = document.getElementById('propertyName').value.trim();
+                const propertyType = document.getElementById('propertyType').value;
+                const priceYear = parseInt(document.getElementById('priceYear').value);
+                const genderCategory = document.getElementById('genderCategory').value;
+                const location = document.getElementById('location').value.trim();
+                const description = document.getElementById('description').value.trim();
+                const totalRooms = parseInt(document.getElementById('totalRooms').value);
+                const availableRooms = parseInt(document.getElementById('availableRooms').value);
+                
+                // Validate
+                if (!propertyName || !propertyType || !priceYear || !genderCategory || !location || !totalRooms || isNaN(availableRooms)) {
+                    showNotification('Please fill in all required fields!', 'warning');
+                    return;
+                }
+                
+                if (availableRooms > totalRooms) {
+                    showNotification('Available rooms cannot exceed total rooms!', 'warning');
+                    return;
+                }
+                
+                if (priceYear < 50000 || priceYear > 500000) {
+                    showNotification('Price should be between ₦50,000 and ₦500,000 per year!', 'warning');
+                    return;
+                }
+                
+                // Get amenities
+                const amenities = [];
+                const amenitiesCheckboxes = ['wifi', 'security', 'laundry', 'kitchen', 'ac', 'desk'];
+                amenitiesCheckboxes.forEach(checkboxId => {
+                    const checkbox = document.getElementById(checkboxId);
+                    if (checkbox && checkbox.checked) {
+                        amenities.push(checkbox.value);
+                    }
+                });
+                
+                // Process new images
+                const previewImages = document.querySelectorAll('#imagePreview .preview-image img');
+                const newImages = Array.from(previewImages).map(img => img.src);
+                
+                // Determine status
+                let status = 'available';
+                if (availableRooms === 0) {
+                    status = 'booked';
+                }
+                
+                if (propertyId) {
+                    // Edit existing property
+                    const index = properties.findIndex(p => p.id === propertyId);
+                    if (index !== -1) {
+                        // Keep existing images and add new ones
+                        const existingImages = properties[index].images || [];
+                        const allImages = [...existingImages, ...newImages];
+                        
+                        properties[index] = {
+                            ...properties[index],
+                            name: propertyName,
+                            type: propertyType === 'shared' ? 'Shared Room' :
+                                  propertyType === 'private' ? 'Private Room' :
+                                  propertyType === 'studio' ? 'Studio Apartment' : '1-Bedroom Apartment',
+                            location: location,
+                            price: priceYear,
+                            status: status,
+                            totalRooms: totalRooms,
+                            availableRooms: availableRooms,
+                            gender: genderCategory === 'male' ? 'Male Only' :
+                                   genderCategory === 'female' ? 'Female Only' : 'Mixed',
+                            amenities: amenities,
+                            images: allImages.slice(0, 10), // Limit to 10 images
+                            description: description || 'No description provided.',
+                            updatedAt: new Date().toISOString()
+                        };
+                        showNotification('Property updated successfully!', 'success');
+                    }
+                } else {
+                    // Create new property
+                    const newProperty = {
+                        id: `PROP-${String(properties.length + 1).padStart(3, '0')}`,
+                        name: propertyName,
+                        type: propertyType === 'shared' ? 'Shared Room' :
+                              propertyType === 'private' ? 'Private Room' :
+                              propertyType === 'studio' ? 'Studio Apartment' : '1-Bedroom Apartment',
+                        location: location,
+                        price: priceYear,
+                        status: status,
+                        totalRooms: totalRooms,
+                        availableRooms: availableRooms,
+                        gender: genderCategory === 'male' ? 'Male Only' :
+                               genderCategory === 'female' ? 'Female Only' : 'Mixed',
+                        amenities: amenities,
+                        images: newImages.length > 0 ? newImages.slice(0, 10) : [
+                            'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                        ],
+                        description: description || 'No description provided.',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    };
+                    properties.push(newProperty);
+                    showNotification('Property added successfully! Will appear on student website.', 'success');
+                }
+                
+                // Save to localStorage
+                localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
+                
+                // Reload data
+                loadProperties();
+                loadDashboardData();
+                
+                // Close modal and reset form
+                closeModal('propertyModal');
+                document.getElementById('propertyForm').reset();
+                resetImagePreview();
+                
+            } catch (error) {
+                console.error('Error saving property:', error);
+                showNotification('Error saving property. Please check your inputs.', 'danger');
+            }
+        }
+
+        // Edit property
+        function editProperty(propertyId) {
+            try {
+                const property = properties.find(p => p.id === propertyId);
+                if (!property) {
+                    showNotification('Property not found!', 'danger');
+                    return;
+                }
+                
+                // Set modal title
+                document.getElementById('propertyModalTitle').textContent = 'Edit Property';
+                document.getElementById('propertyId').value = property.id;
+                
+                // Fill form with property data
+                document.getElementById('propertyName').value = property.name || '';
+                document.getElementById('propertyType').value = 
+                    property.type && property.type.includes('Shared') ? 'shared' :
+                    property.type && property.type.includes('Private') ? 'private' :
+                    property.type && property.type.includes('Studio') ? 'studio' : '1bedroom';
+                document.getElementById('priceYear').value = property.price || '';
+                document.getElementById('genderCategory').value = 
+                    property.gender && property.gender.includes('Male') ? 'male' :
+                    property.gender && property.gender.includes('Female') ? 'female' : 'mixed';
+                document.getElementById('location').value = property.location || '';
+                document.getElementById('description').value = property.description || '';
+                document.getElementById('totalRooms').value = property.totalRooms || '';
+                document.getElementById('availableRooms').value = property.availableRooms || '';
+                
+                // Set amenities checkboxes
+                const amenitiesCheckboxes = ['wifi', 'security', 'laundry', 'kitchen', 'ac', 'desk'];
+                amenitiesCheckboxes.forEach(checkboxId => {
+                    const checkbox = document.getElementById(checkboxId);
+                    if (checkbox) {
+                        const checkboxValue = checkbox.value;
+                        checkbox.checked = property.amenities && property.amenities.includes(checkboxValue);
+                    }
+                });
+                
+                // Show uploaded images section
+                const uploadedSection = document.getElementById('uploadedImagesSection');
+                const uploadedGrid = document.getElementById('uploadedImagesGrid');
+                
+                if (property.images && property.images.length > 0) {
+                    uploadedSection.style.display = 'block';
+                    uploadedGrid.innerHTML = '';
+                    
+                    property.images.forEach((imageSrc, index) => {
+                        const imageItem = document.createElement('div');
+                        imageItem.className = 'uploaded-image-item';
+
+                        const img = document.createElement('img');
+                        img.src = imageSrc;
+                        img.alt = `Property Image ${index + 1}`;
+                        img.style.cursor = 'pointer';
+                        img.onclick = () => {
+                            showImageInLightbox(property.images, index);
+                        };
+                        
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.className = 'uploaded-image-actions';
+
+                        const viewBtn = document.createElement('button');
+                        viewBtn.className = 'uploaded-image-btn view';
+                        viewBtn.title = 'View Full Size';
+                        viewBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                        viewBtn.onclick = () => {
+                            showImageInLightbox(property.images, index);
+                        };
+
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'uploaded-image-btn delete';
+                        deleteBtn.title = 'Remove Image';
+                        deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                        deleteBtn.onclick = function() {
+                            if (confirm('Are you sure you want to remove this image?')) {
+                                removeUploadedImage(property.id, index);
+                            }
+                        };
+
+                        actionsDiv.appendChild(viewBtn);
+                        actionsDiv.appendChild(deleteBtn);
+
+                        imageItem.appendChild(img);
+                        imageItem.appendChild(actionsDiv);
+                        uploadedGrid.appendChild(imageItem);
+                    });
+                } else {
+                    uploadedSection.style.display = 'none';
+                }
+                
+                // Reset new images preview
+                resetImagePreview();
+                
+                showModal('propertyModal');
+            } catch (error) {
+                console.error('Error editing property:', error);
+                showNotification('Error loading property data.', 'danger');
+            }
+        }
+
+        // View property details
+        function viewPropertyDetails(propertyId) {
+            try {
+                const property = properties.find(p => p.id === propertyId);
+                if (!property) {
+                    showNotification('Property not found!', 'danger');
+                    return;
+                }
+                
+                let message = `Property Details:\n\n`;
+                message += `ID: ${property.id}\n`;
+                message += `Name: ${property.name}\n`;
+                message += `Type: ${property.type}\n`;
+                message += `Location: ${property.location}\n`;
+                message += `Price: ₦${property.price ? property.price.toLocaleString() : '0'}/year\n`;
+                message += `Status: ${property.status}\n`;
+                message += `Rooms: ${property.availableRooms || 0}/${property.totalRooms || 0} available\n`;
+                message += `Gender: ${property.gender}\n`;
+                message += `Amenities: ${property.amenities ? property.amenities.join(', ') : 'None'}\n`;
+                message += `Description: ${property.description || 'No description'}\n`;
+                message += `Created: ${formatDate(property.createdAt)}\n`;
+                message += `Updated: ${formatDate(property.updatedAt)}\n`;
+                message += `Images: ${property.images ? property.images.length : 0} uploaded\n`;
+                
+                if (property.images && property.images.length > 0) {
+                    const viewImages = confirm(message + '\n\nClick OK to view images, or Cancel to close.');
+                    if (viewImages) {
+                        showImageInLightbox(property.images, 0);
+                    }
+                } else {
+                    alert(message);
+                }
+            } catch (error) {
+                console.error('Error viewing property:', error);
+                showNotification('Error loading property details.', 'danger');
+            }
+        }
+
+        // Remove uploaded image
+        function removeUploadedImage(propertyId, imageIndex) {
+            try {
+                const property = properties.find(p => p.id === propertyId);
+                if (property && property.images && property.images.length > imageIndex) {
+                    property.images.splice(imageIndex, 1);
+                    property.updatedAt = new Date().toISOString();
+                    
+                    // Update localStorage
+                    localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
+                    
+                    // Update the view
+                    editProperty(propertyId);
+                    showNotification('Image removed successfully!', 'success');
+                }
+            } catch (error) {
+                console.error('Error removing image:', error);
+                showNotification('Error removing image.', 'danger');
+            }
+        }
+
+        // Show image in lightbox
+        function showImageInLightbox(images, index = 0) {
+            try {
+                if (!images || images.length === 0) {
+                    showNotification('No images to display', 'warning');
+                    return;
+                }
+                
+                // Filter out invalid images
+                currentLightboxImages = images.filter(img => 
+                    img && (typeof img === 'string') && (img.startsWith('http') || img.startsWith('data:image'))
+                );
+                
+                if (currentLightboxImages.length === 0) {
+                    showNotification('No valid images to display', 'warning');
+                    return;
+                }
+                
+                // Ensure index is within bounds
+                currentLightboxIndex = Math.max(0, Math.min(index, currentLightboxImages.length - 1));
+                
+                const lightbox = document.getElementById('imageLightbox');
+                const lightboxImage = document.getElementById('lightboxImage');
+                const lightboxCaption = document.getElementById('lightboxCaption');
+                const lightboxCounter = document.getElementById('lightboxCounter');
+                
+                // Set a default image in case of error
+                const defaultImage = 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                
+                lightboxImage.src = currentLightboxImages[currentLightboxIndex];
+                lightboxImage.onerror = function() {
+                    this.src = defaultImage;
+                };
+                
+                lightboxCaption.textContent = `Image ${currentLightboxIndex + 1} of ${currentLightboxImages.length}`;
+                lightboxCounter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+                
+                lightbox.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                console.error('Error showing lightbox:', error);
+                showNotification('Error displaying images.', 'danger');
+            }
+        }
+
+        // Close lightbox
+        function closeLightbox() {
+            const lightbox = document.getElementById('imageLightbox');
+            if (lightbox) {
+                lightbox.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+            currentLightboxImages = [];
+            currentLightboxIndex = 0;
+        }
+
+        // Navigate to previous image
+        function prevImage() {
+            if (currentLightboxImages.length === 0) return;
+            currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxImages.length) % currentLightboxImages.length;
+            updateLightboxImage();
+        }
+
+        // Navigate to next image
+        function nextImage() {
+            if (currentLightboxImages.length === 0) return;
+            currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxImages.length;
+            updateLightboxImage();
+        }
+
+        // Update lightbox image
+        function updateLightboxImage() {
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxCaption = document.getElementById('lightboxCaption');
+            const lightboxCounter = document.getElementById('lightboxCounter');
+            
+            if (lightboxImage && currentLightboxImages[currentLightboxIndex]) {
+                lightboxImage.src = currentLightboxImages[currentLightboxIndex];
+                lightboxCaption.textContent = `Image ${currentLightboxIndex + 1} of ${currentLightboxImages.length}`;
+                lightboxCounter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxImages.length}`;
+            }
+        }
+
+        // Delete property
+        function deleteProperty(propertyId) {
+            if (confirm('Are you sure you want to delete this property? This will remove it from the student website.')) {
+                const index = properties.findIndex(p => p.id === propertyId);
+                if (index !== -1) {
+                    properties.splice(index, 1);
+                    localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
+                    loadProperties();
+                    loadDashboardData();
+                    showNotification('Property deleted successfully! Removed from student website.', 'success');
+                }
+            }
+        }
+
+        // Add rooms to property
+        function addRooms(propertyId) {
+            const property = properties.find(p => p.id === propertyId);
+            if (!property) {
+                showNotification('Property not found!', 'danger');
+                return;
+            }
+            
+            const roomsToAdd = prompt(`How many rooms to add to ${property.name}? Current: ${property.totalRooms || 0} total, ${property.availableRooms || 0} available`);
+            
+            if (roomsToAdd && !isNaN(roomsToAdd)) {
+                const numRooms = parseInt(roomsToAdd);
+                if (numRooms > 0) {
+                    property.totalRooms = (property.totalRooms || 0) + numRooms;
+                    property.availableRooms = (property.availableRooms || 0) + numRooms;
+                    property.updatedAt = new Date().toISOString();
+                    
+                    // Update status if needed
+                    if (property.availableRooms > 0 && property.status === 'booked') {
+                        property.status = 'available';
+                    }
+                    
+                    // Save changes
+                    localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
+                    
+                    // Reload data
+                    loadProperties();
+                    loadDashboardData();
+                    
+                    showNotification(`${numRooms} rooms added to ${property.name}!`, 'success');
+                }
+            }
+        }
+
+        // View booking details
+        function viewBooking(bookingId) {
+            try {
+                const booking = bookings.find(b => b.id === bookingId);
+                if (!booking) {
+                    showNotification('Booking not found!', 'danger');
+                    return;
+                }
+                
+                const modal = document.getElementById('viewBookingModal');
+                modal.setAttribute('data-booking-id', bookingId);
+                
+                const details = document.getElementById('bookingDetails');
+                details.innerHTML = `
+                    <div style="display: grid; gap: 20px;">
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--dark);">Booking Information</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <strong>Request ID:</strong>
+                                    <p>${booking.id}</p>
+                                </div>
+                                <div>
+                                    <strong>Status:</strong>
+                                    <p><span class="status-badge status-${booking.status}">${booking.status.toUpperCase()}</span></p>
+                                </div>
+                                <div>
+                                    <strong>Student:</strong>
+                                    <p>${booking.studentName}</p>
+                                </div>
+                                <div>
+                                    <strong>Email:</strong>
+                                    <p>${booking.studentEmail || 'Not provided'}</p>
+                                </div>
+                                <div>
+                                    <strong>Phone:</strong>
+                                    <p>${booking.studentPhone || 'Not provided'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--dark);">Property Details</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <strong>Property:</strong>
+                                    <p>${booking.propertyName}</p>
+                                </div>
+                                <div>
+                                    <strong>Move-in Date:</strong>
+                                    <p>${formatDate(booking.moveInDate)}</p>
+                                </div>
+                                <div>
+                                    <strong>Requested Date:</strong>
+                                    <p>${formatDate(booking.requestedDate)}</p>
+                                </div>
+                                <div>
+                                    <strong>Amount:</strong>
+                                    <p style="font-weight: bold; color: var(--primary);">₦${booking.amount ? booking.amount.toLocaleString() : '0'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                showModal('viewBookingModal');
+            } catch (error) {
+                console.error('Error viewing booking:', error);
+                showNotification('Error loading booking details.', 'danger');
+            }
+        }
+
+        // Update booking status
+function updateBookingStatus(bookingId, status) {
+    try {
+        const booking = bookings.find(b => b.id === bookingId);
+        if (!booking) {
+            showNotification('Booking not found!', 'danger');
+            return;
+        }
+        
+        const oldStatus = booking.status;
+        booking.status = status;
+        booking.updatedAt = new Date().toISOString();
+        
+        // Get property
+        const propertyIndex = properties.findIndex(p => p.id === booking.propertyId);
+        
+        // If approved, update property and create payment
+        if (status === 'approved') {
+            if (propertyIndex !== -1) {
+                // Ensure property availability is updated
+                properties[propertyIndex].availableRooms = Math.max(0, (properties[propertyIndex].availableRooms || 0) - 1);
+                if (properties[propertyIndex].availableRooms === 0) {
+                    properties[propertyIndex].status = 'booked';
+                }
+                properties[propertyIndex].updatedAt = new Date().toISOString();
+            }
+            
+            // Create payment record if not exists
+            if (!payments.find(p => p.id === `PAY-${bookingId}`)) {
+                payments.push({
+                    id: `PAY-${bookingId}`,
+                    bookingId: booking.id,
+                    studentId: booking.studentId,
+                    studentName: booking.studentName,
+                    propertyId: booking.propertyId,
+                    propertyName: booking.propertyName,
+                    amount: booking.amount,
+                    date: new Date().toISOString().split('T')[0],
+                    method: 'Pending',
+                    status: 'pending',
+                    receipt: null,
+                    createdAt: new Date().toISOString()
+                });
+            }
+        }
+        
+        // If rejected and was previously approved, restore property availability
+        if (status === 'rejected' && oldStatus === 'approved') {
+            if (propertyIndex !== -1) {
+                properties[propertyIndex].availableRooms += 1;
+                properties[propertyIndex].status = 'available';
+                properties[propertyIndex].updatedAt = new Date().toISOString();
+            }
+            
+            // Remove payment record
+            payments = payments.filter(p => p.id !== `PAY-${bookingId}`);
+        }
+        
+        // Save all changes
+        localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+        localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(properties));
+        localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
+        
+        // Reload data
+        loadBookings();
+        loadRecentBookings();
+        loadPayments();
+        loadProperties();
+        loadDashboardData();
+        
+        // Close modal if open
+        closeModal('viewBookingModal');
+        
+        showNotification(`Booking ${bookingId} ${status === 'approved' ? 'approved' : 'rejected'}!`, 'success');
+    } catch (error) {
+        console.error('Error updating booking status:', error);
+        showNotification('Error updating booking status.', 'danger');
+    }
+}
+
+        // View student details
+        function viewStudent(studentId) {
+            try {
+                const student = students.find(s => s.id === studentId);
+                if (!student) {
+                    showNotification('Student not found!', 'danger');
+                    return;
+                }
+                
+                const modal = document.getElementById('viewStudentModal');
+                modal.setAttribute('data-student-id', studentId);
+                
+                const details = document.getElementById('studentDetails');
+                details.innerHTML = `
+                    <div style="display: grid; gap: 20px;">
+                        <div style="text-align: center;">
+                            ${student.profileImage ? 
+                                `<img src="${student.profileImage}" alt="${student.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px;">` : 
+                                `<div style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; margin: 0 auto 15px;">
+                                    ${student.name ? student.name.charAt(0) : 'S'}
+                                </div>`
+                            }
+                            <h3 style="margin-bottom: 5px;">${student.name || 'N/A'}</h3>
+                            <p style="color: var(--gray);">${student.email || 'N/A'}</p>
+                        </div>
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--dark);">Student Information</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <strong>Student ID:</strong>
+                                    <p>${student.id}</p>
+                                </div>
+                                <div>
+                                    <strong>Status:</strong>
+                                    <p><span class="status-badge status-${student.status}">${student.status.toUpperCase()}</span></p>
+                                </div>
+                                <div>
+                                    <strong>Phone:</strong>
+                                    <p>${student.phone || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <strong>Registered:</strong>
+                                    <p>${formatDate(student.registered)}</p>
+                                </div>
+                                ${student.verified ? `
+                                <div>
+                                    <strong>Verified:</strong>
+                                    <p>${formatDate(student.verified)}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 style="margin-bottom: 10px; color: var(--dark);">Academic Details</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div>
+                                    <strong>University:</strong>
+                                    <p>${student.university || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <strong>Department:</strong>
+                                    <p>${student.department || 'N/A'}</p>
+                                </div>
+                                <div>
+                                    <strong>Current Level:</strong>
+                                    <p>${student.level || 'N/A'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                showModal('viewStudentModal');
+            } catch (error) {
+                console.error('Error viewing student:', error);
+                showNotification('Error loading student details.', 'danger');
+            }
+        }
+
+        // Verify student
+        function verifyStudent(studentId) {
+            try {
+                const student = students.find(s => s.id === studentId);
+                if (!student) {
+                    showNotification('Student not found!', 'danger');
+                    return;
+                }
+                
+                student.status = 'verified';
+                student.verified = new Date().toISOString().split('T')[0];
+                
+                // Also update the user data in localStorage if exists
+                try {
+                    const storedUsers = JSON.parse(localStorage.getItem('uniNextUsers')) || [];
+                    const users = Array.isArray(storedUsers) ? storedUsers : [storedUsers].filter(Boolean);
+                    
+                    const userIndex = users.findIndex(u => u.email === student.email);
+                    if (userIndex !== -1) {
+                        users[userIndex].status = 'verified';
+                        localStorage.setItem('uniNextUser', JSON.stringify(users));
+                    }
+                } catch (error) {
+                    console.error('Error updating user data:', error);
+                }
+                
+                // Save changes
+                localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+                
+                // Reload data
+                loadStudents();
+                loadDashboardData();
+                
+                // Close modal if open
+                closeModal('viewStudentModal');
+                
+                showNotification(`Student ${student.name} verified successfully!`, 'success');
+            } catch (error) {
+                console.error('Error verifying student:', error);
+                showNotification('Error verifying student.', 'danger');
+            }
+        }
+
+        // Delete student
+        function deleteStudent(studentId) {
+            try {
+                const student = students.find(s => s.id === studentId);
+                if (!student) {
+                    showNotification('Student not found!', 'danger');
+                    return;
+                }
+                
+                if (confirm(`Are you sure you want to delete ${student.name || 'this student'}? This will remove all their data.`)) {
+                    const index = students.findIndex(s => s.id === studentId);
+                    if (index !== -1) {
+                        // Also remove from user data
+                        try {
+                            const storedUsers = JSON.parse(localStorage.getItem('uniNextUser')) || [];
+                            const users = Array.isArray(storedUsers) ? storedUsers : [storedUsers].filter(Boolean);
+                            const updatedUsers = users.filter(u => u.email !== student.email);
+                            localStorage.setItem('uniNextUser', JSON.stringify(updatedUsers));
+                        } catch (error) {
+                            console.error('Error removing user data:', error);
+                        }
+                        
+                        // Remove from students
+                        students.splice(index, 1);
+                        localStorage.setItem(STORAGE_KEYS.STUDENTS, JSON.stringify(students));
+                        
+                        // Remove associated bookings
+                        const studentBookings = bookings.filter(b => b.studentId === studentId);
+                        if (studentBookings.length > 0) {
+                            bookings = bookings.filter(b => b.studentId !== studentId);
+                            localStorage.setItem(STORAGE_KEYS.BOOKINGS, JSON.stringify(bookings));
+                        }
+                        
+                        // Remove associated payments
+                        const studentPayments = payments.filter(p => p.studentId === studentId);
+                        if (studentPayments.length > 0) {
+                            payments = payments.filter(p => p.studentId !== studentId);
+                            localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
+                        }
+                        
+                        loadStudents();
+                        loadBookings();
+                        loadPayments();
+                        loadDashboardData();
+                        showNotification('Student and all associated data deleted successfully!', 'success');
+                    }
+                }
+            } catch (error) {
+                console.error('Error deleting student:', error);
+                showNotification('Error deleting student.', 'danger');
+            }
+        }
+
+        // Search students
+        function searchStudents(query) {
+            if ($('#studentsTable').DataTable()) {
+                $('#studentsTable').DataTable().search(query).draw();
+            }
+        }
+
+        // Filter bookings
+        function filterBookings(status) {
+            if ($('#bookingsTable').DataTable()) {
+                if (status === 'all') {
+                    $('#bookingsTable').DataTable().search('').draw();
+                } else {
+                    $('#bookingsTable').DataTable().search(status).draw();
+                }
+            }
+        }
+
+        // Save settings
+        function saveSettings() {
+            try {
+                const adminName = document.getElementById('adminName').value;
+                const adminEmail = document.getElementById('adminEmail').value;
+                const adminPassword = document.getElementById('adminPassword').value;
+                
+                // Save admin settings
+                const adminSettings = {
+                    name: adminName,
+                    email: adminEmail,
+                    updatedAt: new Date().toISOString()
+                };
+                
+                if (adminPassword.trim()) {
+                    adminSettings.passwordChanged = new Date().toISOString();
+                }
+                
+                localStorage.setItem(STORAGE_KEYS.ADMIN_SETTINGS, JSON.stringify(adminSettings));
+                
+                // Clear password field
+                document.getElementById('adminPassword').value = '';
+                
+                showNotification('Settings saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showNotification('Error saving settings.', 'danger');
+            }
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Remove existing notification
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            // Set background color based on type
+            const colors = {
+                success: '#4CAF50',
+                warning: '#ffb703',
+                danger: '#e63946',
+                info: '#4361ee'
+            };
+            notification.style.backgroundColor = colors[type] || colors.info;
+            
+            // Add icon
+            const icons = {
+                success: 'fa-check-circle',
+                warning: 'fa-exclamation-triangle',
+                danger: 'fa-times-circle',
+                info: 'fa-info-circle'
+            };
+            notification.innerHTML = `
+                <i class="fas ${icons[type] || icons.info}" style="margin-right: 10px;"></i>
+                ${message}
+            `;
+            
+            // Add to document
+            document.body.appendChild(notification);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return 'Invalid Date';
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+            } catch (error) {
+                return 'Invalid Date';
+            }
+        }
+
+        // Add this function to admin.html to auto-refresh data
+function startAutoRefresh() {
+    // Refresh bookings every 10 seconds
+    setInterval(() => {
+        const currentTab = document.querySelector('.nav-item.active')?.getAttribute('data-tab');
+        
+        // Always refresh data from localStorage
+        properties = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROPERTIES)) || [];
+        bookings = JSON.parse(localStorage.getItem(STORAGE_KEYS.BOOKINGS)) || [];
+        students = JSON.parse(localStorage.getItem(STORAGE_KEYS.STUDENTS)) || [];
+        payments = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS)) || [];
+        
+        // Update dashboard stats
+        loadDashboardData();
+        
+        // Update current tab if it's bookings
+        if (currentTab === 'bookings') {
+            loadBookings();
+        } else if (currentTab === 'dashboard') {
+            loadRecentBookings();
+        } else if (currentTab === 'properties') {
+            loadProperties();
+        }
+        
+        console.log('Data auto-refreshed');
+    }, 10000); // Refresh every 10 seconds
+}
+
+// Call this in DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+    
+});
+
+// In initializeDataTables function, wrap with:
+function initializeDataTables() {
+    if (typeof $.fn.DataTable === 'undefined') {
+        console.warn('DataTables not loaded yet');
+        return;
+    }
+    
+    // ... existing DataTable initializations
+}
+    </script>
+</body>
+</html>

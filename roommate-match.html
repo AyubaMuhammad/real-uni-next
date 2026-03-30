@@ -1,0 +1,2470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoomieMatch @ UniNext</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --accent: #4CAF50;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--primary);
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            color: var(--dark);
+        }
+
+        .logo span {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        /* Main Card */
+        .main-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid var(--light-gray);
+            padding: 0 20px;
+        }
+
+        .tab-btn {
+            padding: 20px 30px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-btn i {
+            font-size: 18px;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .advanced-filters {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-gray);
+        }
+
+        .advanced-filters.show {
+            display: block;
+        }
+
+        .filter-toggle {
+            color: var(--primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        /* Profile Cards Grid */
+        .profiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+            cursor: pointer;
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .profile-card-header {
+            height: 100px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -40px;
+            left: 20px;
+            border: 4px solid white;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-avatar .default-avatar {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .match-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: var(--shadow);
+        }
+
+        .match-high { color: #10b981; }
+        .match-good { color: #f59e0b; }
+        .match-ok { color: #6b7280; }
+
+        .profile-card-body {
+            padding: 50px 20px 20px;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .profile-details {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: var(--light);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .profile-bio {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--light);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-gray);
+        }
+
+        /* Profile Form */
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .form-section h3 {
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .photo-upload {
+            border: 2px dashed var(--light-gray);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .photo-upload:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .photo-upload i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .photo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            overflow: hidden;
+            border: 3px solid var(--light-gray);
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .rating-scale {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .rating-scale input {
+            width: 60px;
+            text-align: center;
+        }
+
+        /* Requests List */
+        .requests-list {
+            margin-top: 20px;
+        }
+
+        .request-item {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: var(--transition);
+        }
+
+        .request-item:hover {
+            background: white;
+            box-shadow: var(--shadow);
+        }
+
+        .request-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .request-info {
+            flex: 1;
+        }
+
+        .request-info h4 {
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+
+        .request-info p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .request-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Matches List */
+        .matches-list {
+            margin-top: 20px;
+        }
+
+        .match-item {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid var(--light-gray);
+            transition: var(--transition);
+        }
+
+        .match-item:hover {
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--light-gray);
+            position: sticky;
+            top: 0;
+            background: white;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        /* Profile Detail */
+        .profile-detail-header {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .detail-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+        .detail-info h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .detail-info p {
+            color: var(--gray);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-section {
+            margin-bottom: 25px;
+        }
+
+        .detail-section h4 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: var(--radius);
+        }
+
+        .detail-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .detail-item span {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .compatibility-meter {
+            background: var(--light);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+        }
+
+        .meter-bar {
+            height: 10px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            width: 0%;
+        }
+
+        /* Interests Tags */
+        .interests-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .interest-tag {
+            background: white;
+            border: 1px solid var(--light-gray);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 500;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .notification.success { background: #10b981; }
+        .notification.error { background: #ef4444; }
+        .notification.info { background: var(--primary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .loading i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+                padding: 0;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-detail-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .request-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .request-actions {
+                width: 100%;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-user-friends"></i>
+                <h1>RoomieMatch <span>UniNext</span></h1>
+            </div>
+            <div class="user-info" id="userInfo">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="find">
+                    <i class="fas fa-search"></i> Find Roommates
+                </button>
+                <button class="tab-btn" data-tab="profile">
+                    <i class="fas fa-user-edit"></i> My Profile
+                </button>
+                <button class="tab-btn" data-tab="matches">
+                    <i class="fas fa-handshake"></i> Matches & Requests
+                </button>
+            </div>
+
+            <!-- Find Roommates Tab -->
+            <div class="tab-content active" id="findTab">
+                <!-- Filters -->
+                <div class="filters-section">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label class="filter-label">Gender</label>
+                            <select class="filter-select" id="genderFilter">
+                                <option value="">Any Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Budget (₦/year)</label>
+                            <select class="filter-select" id="budgetFilter">
+                                <option value="">Any Budget</option>
+                                <option value="50000">Under ₦50k</option>
+                                <option value="100000">₦50k - ₦100k</option>
+                                <option value="150000">₦100k - ₦150k</option>
+                                <option value="200000">₦150k - ₦200k</option>
+                                <option value="250000">Above ₦200k</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Level</label>
+                            <select class="filter-select" id="levelFilter">
+                                <option value="">Any Level</option>
+                                <option value="100L">100 Level</option>
+                                <option value="200L">200 Level</option>
+                                <option value="300L">300 Level</option>
+                                <option value="400L">400 Level</option>
+                                <option value="500L">500 Level</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-toggle" id="toggleAdvancedFilters">
+                        <i class="fas fa-sliders-h"></i> Advanced Filters
+                    </div>
+                    
+                    <div class="advanced-filters" id="advancedFilters">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label">Sleep Schedule</label>
+                                <select class="filter-select" id="sleepFilter">
+                                    <option value="">Any</option>
+                                    <option value="Early Bird">Early Bird</option>
+                                    <option value="Night Owl">Night Owl</option>
+                                    <option value="Flexible">Flexible</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Study Habit</label>
+                                <select class="filter-select" id="studyFilter">
+                                    <option value="">Any</option>
+                                    <option value="Quiet Study">Quiet Study</option>
+                                    <option value="Group Study">Group Study</option>
+                                    <option value="Mixed">Mixed</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Cleanliness</label>
+                                <select class="filter-select" id="cleanFilter">
+                                    <option value="">Any</option>
+                                    <option value="5">Very Tidy (5)</option>
+                                    <option value="4">Tidy (4)</option>
+                                    <option value="3">Average (3)</option>
+                                    <option value="2">Casual (2)</option>
+                                    <option value="1">Messy (1)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label">Smoking</label>
+                                <select class="filter-select" id="smokingFilter">
+                                    <option value="">Any</option>
+                                    <option value="No">Non-smoker</option>
+                                    <option value="Occasional">Occasional</option>
+                                    <option value="Yes">Smoker</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Drinking</label>
+                                <select class="filter-select" id="drinkingFilter">
+                                    <option value="">Any</option>
+                                    <option value="No">Non-drinker</option>
+                                    <option value="Occasional">Occasional</option>
+                                    <option value="Yes">Drinker</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Guest Preference</label>
+                                <select class="filter-select" id="guestFilter">
+                                    <option value="">Any</option>
+                                    <option value="Never">Never</option>
+                                    <option value="Occasional">Occasional</option>
+                                    <option value="Frequent">Frequent</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                            <button class="btn btn-secondary" id="resetFilters">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button class="btn btn-primary" id="applyFilters">
+                                <i class="fas fa-filter"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profiles Grid -->
+                <div id="profilesGrid" class="profiles-grid">
+                    <!-- Will be populated by JavaScript -->
+                    <div class="loading">
+                        <i class="fas fa-spinner"></i>
+                        <p>Loading potential roommates...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Profile Tab -->
+            <div class="tab-content" id="profileTab">
+                <form id="profileForm">
+                    <!-- Basic Info Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-user"></i> Basic Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Profile Photo</label>
+                                <div class="photo-upload" id="profilePhotoUpload">
+                                    <div class="photo-preview" id="profilePhotoPreview">
+                                        <img src="" alt="" id="profilePreviewImage" style="display: none;">
+                                        <div id="profileDefaultPreview" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: #f0f0f0;">
+                                            <i class="fas fa-camera" style="font-size: 40px; color: #999;"></i>
+                                        </div>
+                                    </div>
+                                    <p>Click to upload photo</p>
+                                    <p style="font-size: 12px; color: var(--gray);">Max 5MB</p>
+                                    <input type="file" id="profilePhotoInput" accept="image/*" style="display: none;">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" class="form-control" id="fullName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Age *</label>
+                                <input type="number" class="form-control" id="age" min="16" max="50" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Gender *</label>
+                                <select class="form-control" id="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Department *</label>
+                                <select class="form-control" id="department" required>
+                                    <option value="">Select Department</option>
+                                    <!-- Aliko Dangote University Courses -->
+                                    <option value="Accounting">Accounting</option>
+                                    <option value="Agricultural Economics">Agricultural Economics</option>
+                                    <option value="Agricultural Extension">Agricultural Extension</option>
+                                    <option value="Animal Science">Animal Science</option>
+                                    <option value="Arabic Studies">Arabic Studies</option>
+                                    <option value="Architecture">Architecture</option>
+                                    <option value="Banking and Finance">Banking and Finance</option>
+                                    <option value="Biochemistry">Biochemistry</option>
+                                    <option value="Botany">Botany</option>
+                                    <option value="Business Administration">Business Administration</option>
+                                    <option value="Chemical Engineering">Chemical Engineering</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value="Computer Engineering">Computer Engineering</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Crop Science">Crop Science</option>
+                                    <option value="Economics">Economics</option>
+                                    <option value="Education and Biology">Education and Biology</option>
+                                    <option value="Education and Chemistry">Education and Chemistry</option>
+                                    <option value="Education and Mathematics">Education and Mathematics</option>
+                                    <option value="Education and Physics">Education and Physics</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="English Language">English Language</option>
+                                    <option value="Fisheries and Aquaculture">Fisheries and Aquaculture</option>
+                                    <option value="Food Science and Technology">Food Science and Technology</option>
+                                    <option value="Forestry and Wildlife">Forestry and Wildlife</option>
+                                    <option value="Geography">Geography</option>
+                                    <option value="Geology">Geology</option>
+                                    <option value="Guidance and Counselling">Guidance and Counselling</option>
+                                    <option value="History">History</option>
+                                    <option value="Home Economics">Home Economics</option>
+                                    <option value="Industrial Chemistry">Industrial Chemistry</option>
+                                    <option value="Islamic Studies">Islamic Studies</option>
+                                    <option value="Law">Law</option>
+                                    <option value="Linguistics">Linguistics</option>
+                                    <option value="Mass Communication">Mass Communication</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                    <option value="Medical Laboratory Science">Medical Laboratory Science</option>
+                                    <option value="Medicine and Surgery">Medicine and Surgery</option>
+                                    <option value="Microbiology">Microbiology</option>
+                                    <option value="Nursing">Nursing</option>
+                                    <option value="Pharmacy">Pharmacy</option>
+                                    <option value="Philosophy">Philosophy</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Physiology">Physiology</option>
+                                    <option value="Political Science">Political Science</option>
+                                    <option value="Psychology">Psychology</option>
+                                    <option value="Public Administration">Public Administration</option>
+                                    <option value="Radiography">Radiography</option>
+                                    <option value="Sociology">Sociology</option>
+                                    <option value="Soil Science">Soil Science</option>
+                                    <option value="Statistics">Statistics</option>
+                                    <option value="Theatre Arts">Theatre Arts</option>
+                                    <option value="Urban and Regional Planning">Urban and Regional Planning</option>
+                                    <option value="Veterinary Medicine">Veterinary Medicine</option>
+                                    <option value="Zoology">Zoology</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Level *</label>
+                                <select class="form-control" id="level" required>
+                                    <option value="">Select Level</option>
+                                    <option value="100L">100 Level</option>
+                                    <option value="200L">200 Level</option>
+                                    <option value="300L">300 Level</option>
+                                    <option value="400L">400 Level</option>
+                                    <option value="500L">500 Level</option>
+                                    <option value="600L">600 Level</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label>About Me *</label>
+                                <textarea class="form-control" id="bio" rows="4" placeholder="Tell potential roommates about yourself, your habits, what you're looking for..." required></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lifestyle Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-heart"></i> Lifestyle & Habits</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Sleep Schedule *</label>
+                                <select class="form-control" id="sleepSchedule" required>
+                                    <option value="">Select</option>
+                                    <option value="Early Bird">Early Bird (Wake up early, sleep early)</option>
+                                    <option value="Night Owl">Night Owl (Stay up late, wake up late)</option>
+                                    <option value="Flexible">Flexible (Can adapt)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Study Habit *</label>
+                                <select class="form-control" id="studyHabit" required>
+                                    <option value="">Select</option>
+                                    <option value="Quiet Study">Need complete quiet</option>
+                                    <option value="Group Study">Can study with background noise</option>
+                                    <option value="Mixed">Depends on mood</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Cleanliness (1-5) *</label>
+                                <div class="rating-scale">
+                                    <input type="range" class="form-control" id="cleanliness" min="1" max="5" value="3" step="1">
+                                    <span id="cleanlinessValue">3</span>
+                                </div>
+                                <small style="color: var(--gray);">1 = Very messy, 5 = Extremely tidy</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Guest Preference *</label>
+                                <select class="form-control" id="guestPreference" required>
+                                    <option value="">Select</option>
+                                    <option value="Never">No guests ever</option>
+                                    <option value="Occasional">Occasional guests</option>
+                                    <option value="Frequent">Frequent guests/parties</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Smoking *</label>
+                                <select class="form-control" id="smoking" required>
+                                    <option value="">Select</option>
+                                    <option value="No">Non-smoker</option>
+                                    <option value="Occasional">Occasional (outside)</option>
+                                    <option value="Yes">Smoker</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Drinking *</label>
+                                <select class="form-control" id="drinking" required>
+                                    <option value="">Select</option>
+                                    <option value="No">Non-drinker</option>
+                                    <option value="Occasional">Occasional/Social</option>
+                                    <option value="Yes">Regular drinker</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Dietary Preference</label>
+                                <select class="form-control" id="dietary">
+                                    <option value="">Select (Optional)</option>
+                                    <option value="Non-Vegetarian">Non-Vegetarian</option>
+                                    <option value="Vegetarian">Vegetarian</option>
+                                    <option value="Vegan">Vegan</option>
+                                    <option value="Any">No Preference</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Religion (Optional)</label>
+                                <input type="text" class="form-control" id="religion" placeholder="e.g., Christian, Muslim, etc.">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preferences Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-sliders-h"></i> Roommate Preferences</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Preferred Gender</label>
+                                <select class="form-control" id="preferredGender">
+                                    <option value="No Preference">No Preference</option>
+                                    <option value="Male">Male Only</option>
+                                    <option value="Female">Female Only</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Budget Range (₦/year) *</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <input type="number" class="form-control" id="budgetMin" placeholder="Min" min="0" step="1000" required>
+                                    <input type="number" class="form-control" id="budgetMax" placeholder="Max" min="0" step="1000" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Preferred Location</label>
+                                <input type="text" class="form-control" id="preferredLocation" placeholder="e.g., Yaba, Surulere, etc.">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Move-in Date</label>
+                                <input type="date" class="form-control" id="moveInDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interests Section -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-star"></i> Interests & Hobbies</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Hobbies (Select multiple)</label>
+                                <select class="form-control" id="hobbies" multiple size="5">
+                                    <option value="Reading">Reading</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Movies">Movies/TV</option>
+                                    <option value="Cooking">Cooking</option>
+                                    <option value="Fitness">Fitness/Working out</option>
+                                    <option value="Photography">Photography</option>
+                                    <option value="Art">Art/Drawing</option>
+                                    <option value="Travel">Travel/Adventure</option>
+                                    <option value="Technology">Technology</option>
+                                    <option value="Fashion">Fashion</option>
+                                </select>
+                                <small>Hold Ctrl/Cmd to select multiple</small>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Music Genres</label>
+                                <select class="form-control" id="musicGenres" multiple size="4">
+                                    <option value="Afrobeats">Afrobeats</option>
+                                    <option value="Hip Hop">Hip Hop/Rap</option>
+                                    <option value="R&B">R&B</option>
+                                    <option value="Gospel">Gospel</option>
+                                    <option value="Rock">Rock</option>
+                                    <option value="Classical">Classical</option>
+                                    <option value="Jazz">Jazz</option>
+                                    <option value="Pop">Pop</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Sports/Activities</label>
+                                <select class="form-control" id="sports" multiple size="4">
+                                    <option value="Football">Football</option>
+                                    <option value="Basketball">Basketball</option>
+                                    <option value="Volleyball">Volleyball</option>
+                                    <option value="Tennis">Tennis</option>
+                                    <option value="Swimming">Swimming</option>
+                                    <option value="Gym">Gym/Workout</option>
+                                    <option value="Running">Running</option>
+                                    <option value="None">Not into sports</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Languages Spoken</label>
+                                <select class="form-control" id="languages" multiple size="4">
+                                    <option value="English">English</option>
+                                    <option value="Hausa">Hausa</option>
+                                    <option value="Yoruba">Yoruba</option>
+                                    <option value="Igbo">Igbo</option>
+                                    <option value="Arabic">Arabic</option>
+                                    <option value="French">French</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deal Breakers -->
+                    <div class="form-section">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Deal Breakers</h3>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>What absolutely cannot accept?</label>
+                                <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Smoking"> Smoking
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Drinking"> Drinking
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Late Night Parties"> Late Night Parties
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Pets"> Pets
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Loud Music"> Loud Music
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Frequent Guests"> Frequent Guests
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 5px;">
+                                        <input type="checkbox" value="Messiness"> Messiness
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; justify-content: flex-end; margin-top: 30px;">
+                        <button type="button" class="btn btn-secondary" id="cancelProfileEdit">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Matches & Requests Tab -->
+            <div class="tab-content" id="matchesTab">
+                <!-- Pending Requests -->
+                <div class="form-section">
+                    <h3><i class="fas fa-clock"></i> Pending Requests (3)</h3>
+                    <div class="requests-list" id="pendingRequests">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Your Matches -->
+                <div class="form-section">
+                    <h3><i class="fas fa-handshake"></i> Your Matches</h3>
+                    <div class="matches-list" id="matchesList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Sent Requests -->
+                <div class="form-section">
+                    <h3><i class="fas fa-paper-plane"></i> Sent Requests</h3>
+                    <div class="requests-list" id="sentRequests">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Detail Modal -->
+    <div class="modal" id="profileDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Profile Details</h3>
+                <button class="modal-close" id="closeProfileModal">&times;</button>
+            </div>
+            <div class="modal-body" id="profileDetailContent">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Connection Request Modal -->
+    <div class="modal" id="connectionModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Send Connection Request</h3>
+                <button class="modal-close" id="closeConnectionModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 20px;" id="connectionProfileInfo">
+                    <!-- Will be populated -->
+                </div>
+                <div class="form-group">
+                    <label>Add a personal message (optional)</label>
+                    <textarea class="form-control" id="connectionMessage" rows="4" placeholder="Hi! I think we'd make great roommates because..."></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-primary" style="flex: 1;" id="sendConnectionRequest">
+                        <i class="fas fa-paper-plane"></i> Send Request
+                    </button>
+                    <button class="btn btn-secondary" style="flex: 1;" id="cancelConnectionRequest">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== STORAGE KEYS =====
+        const ROOMMATE_STORAGE_KEYS = {
+            PROFILES: 'roommateProfiles',
+            REQUESTS: 'roommateRequests',
+            MATCHES: 'roommateMatches',
+            CURRENT_USER: 'roommateCurrentUser'
+        };
+
+        // ===== SAMPLE STUDENT DATA (Aliko Dangote University) =====
+        const SAMPLE_STUDENTS = [
+            {
+                id: 'STU001',
+                fullName: 'Aisha Muhammad',
+                age: 21,
+                gender: 'Female',
+                department: 'Medicine and Surgery',
+                level: '400L',
+                bio: 'Quiet, focused medical student. Love reading and studying. Looking for a tidy, focused roommate.',
+                sleepSchedule: 'Early Bird',
+                studyHabit: 'Quiet Study',
+                cleanliness: 5,
+                guestPreference: 'Never',
+                smoking: 'No',
+                drinking: 'No',
+                dietary: 'Non-Vegetarian',
+                religion: 'Muslim',
+                preferredGender: 'Female',
+                budgetMin: 80000,
+                budgetMax: 150000,
+                preferredLocation: 'Hostel Area',
+                moveInDate: '2024-09-01',
+                hobbies: ['Reading', 'Studying', 'Cooking'],
+                musicGenres: ['Islamic', 'Gospel'],
+                sports: ['None'],
+                languages: ['English', 'Hausa', 'Arabic'],
+                dealBreakers: ['Smoking', 'Loud Music', 'Late Night Parties'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 'STU002',
+                fullName: 'Chinedu Okonkwo',
+                age: 23,
+                gender: 'Male',
+                department: 'Computer Science',
+                level: '300L',
+                bio: 'Tech enthusiast, gamer, and casual coder. Social but respect quiet hours.',
+                sleepSchedule: 'Night Owl',
+                studyHabit: 'Mixed',
+                cleanliness: 3,
+                guestPreference: 'Occasional',
+                smoking: 'No',
+                drinking: 'Occasional',
+                dietary: 'Non-Vegetarian',
+                religion: 'Christian',
+                preferredGender: 'No Preference',
+                budgetMin: 50000,
+                budgetMax: 100000,
+                preferredLocation: 'Off-campus',
+                moveInDate: '2024-08-15',
+                hobbies: ['Gaming', 'Technology', 'Movies', 'Music'],
+                musicGenres: ['Afrobeats', 'Hip Hop', 'R&B'],
+                sports: ['Football', 'Basketball'],
+                languages: ['English', 'Igbo'],
+                dealBreakers: ['Smoking'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 'STU003',
+                fullName: 'Fatima Abubakar',
+                age: 20,
+                gender: 'Female',
+                department: 'Law',
+                level: '200L',
+                bio: 'Ambitious law student. Love reading, debating, and quiet environments.',
+                sleepSchedule: 'Flexible',
+                studyHabit: 'Quiet Study',
+                cleanliness: 4,
+                guestPreference: 'Occasional',
+                smoking: 'No',
+                drinking: 'No',
+                dietary: 'Vegetarian',
+                religion: 'Muslim',
+                preferredGender: 'Female',
+                budgetMin: 60000,
+                budgetMax: 120000,
+                preferredLocation: 'Any',
+                moveInDate: '2024-09-15',
+                hobbies: ['Reading', 'Debating', 'Writing'],
+                musicGenres: ['Gospel', 'Classical'],
+                sports: ['None'],
+                languages: ['English', 'Hausa'],
+                dealBreakers: ['Smoking', 'Drinking'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 'STU004',
+                fullName: 'Oluwaseun Adeyemi',
+                age: 22,
+                gender: 'Male',
+                department: 'Mechanical Engineering',
+                level: '400L',
+                bio: 'Engineering student who loves building things. Active in sports.',
+                sleepSchedule: 'Early Bird',
+                studyHabit: 'Group Study',
+                cleanliness: 3,
+                guestPreference: 'Occasional',
+                smoking: 'No',
+                drinking: 'Occasional',
+                dietary: 'Non-Vegetarian',
+                religion: 'Christian',
+                preferredGender: 'Male',
+                budgetMin: 70000,
+                budgetMax: 130000,
+                preferredLocation: 'Near faculty',
+                moveInDate: '2024-08-01',
+                hobbies: ['Sports', 'Fitness', 'Technology'],
+                musicGenres: ['Afrobeats', 'Hip Hop'],
+                sports: ['Football', 'Gym', 'Basketball'],
+                languages: ['English', 'Yoruba'],
+                dealBreakers: ['Messiness'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 'STU005',
+                fullName: 'Grace Eze',
+                age: 19,
+                gender: 'Female',
+                department: 'Nursing',
+                level: '200L',
+                bio: 'Nursing student, very organized and clean. Love helping others.',
+                sleepSchedule: 'Early Bird',
+                studyHabit: 'Quiet Study',
+                cleanliness: 5,
+                guestPreference: 'Never',
+                smoking: 'No',
+                drinking: 'No',
+                dietary: 'Non-Vegetarian',
+                religion: 'Christian',
+                preferredGender: 'Female',
+                budgetMin: 50000,
+                budgetMax: 90000,
+                preferredLocation: 'Hostel',
+                moveInDate: '2024-09-01',
+                hobbies: ['Reading', 'Cooking', 'Music'],
+                musicGenres: ['Gospel', 'R&B'],
+                sports: ['None'],
+                languages: ['English', 'Igbo'],
+                dealBreakers: ['Smoking', 'Drinking', 'Late Night Parties'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 'STU006',
+                fullName: 'Ibrahim Tanko',
+                age: 24,
+                gender: 'Male',
+                department: 'Accounting',
+                level: '500L',
+                bio: 'Final year accounting student. Focused on studies but enjoy socializing on weekends.',
+                sleepSchedule: 'Flexible',
+                studyHabit: 'Mixed',
+                cleanliness: 4,
+                guestPreference: 'Occasional',
+                smoking: 'No',
+                drinking: 'Occasional',
+                dietary: 'Non-Vegetarian',
+                religion: 'Muslim',
+                preferredGender: 'No Preference',
+                budgetMin: 100000,
+                budgetMax: 200000,
+                preferredLocation: 'Quiet area',
+                moveInDate: '2024-10-01',
+                hobbies: ['Reading', 'Business', 'Travel'],
+                musicGenres: ['Afrobeats', 'Islamic'],
+                sports: ['Football'],
+                languages: ['English', 'Hausa'],
+                dealBreakers: ['Smoking'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            }
+        ];
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            setupEventListeners();
+            
+            // Create a demo current user (in real app, this would come from login)
+            createDemoUser();
+            
+            // Load profiles
+            loadProfiles();
+        });
+
+        function initializeStorage() {
+            if (!localStorage.getItem(ROOMMATE_STORAGE_KEYS.PROFILES)) {
+                localStorage.setItem(ROOMMATE_STORAGE_KEYS.PROFILES, JSON.stringify(SAMPLE_STUDENTS));
+            }
+            if (!localStorage.getItem(ROOMMATE_STORAGE_KEYS.REQUESTS)) {
+                localStorage.setItem(ROOMMATE_STORAGE_KEYS.REQUESTS, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(ROOMMATE_STORAGE_KEYS.MATCHES)) {
+                localStorage.setItem(ROOMMATE_STORAGE_KEYS.MATCHES, JSON.stringify([]));
+            }
+        }
+
+        function createDemoUser() {
+            // Create a demo current user (in production, this would be the logged-in user)
+            const demoUser = {
+                id: 'CURRENT_USER',
+                fullName: 'You (Demo User)',
+                age: 22,
+                gender: 'Male',
+                department: 'Computer Science',
+                level: '300L',
+                bio: 'This is your profile. Complete it to find matches!',
+                sleepSchedule: 'Night Owl',
+                studyHabit: 'Quiet Study',
+                cleanliness: 4,
+                guestPreference: 'Occasional',
+                smoking: 'No',
+                drinking: 'Occasional',
+                dietary: 'Non-Vegetarian',
+                religion: 'Christian',
+                preferredGender: 'No Preference',
+                budgetMin: 60000,
+                budgetMax: 150000,
+                preferredLocation: 'Yaba',
+                moveInDate: '2024-09-01',
+                hobbies: ['Gaming', 'Technology', 'Music'],
+                musicGenres: ['Afrobeats', 'Hip Hop'],
+                sports: ['Football'],
+                languages: ['English', 'Yoruba'],
+                dealBreakers: ['Smoking'],
+                photo: '',
+                status: 'active',
+                createdAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER, JSON.stringify(demoUser));
+            
+            // Update header
+            document.getElementById('userInfo').innerHTML = `
+                <span>Welcome, ${demoUser.fullName}</span>
+                <div class="user-avatar">${demoUser.fullName.charAt(0)}</div>
+            `;
+        }
+
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+                });
+            });
+
+            // Advanced filters toggle
+            document.getElementById('toggleAdvancedFilters').addEventListener('click', function() {
+                document.getElementById('advancedFilters').classList.toggle('show');
+                this.innerHTML = document.getElementById('advancedFilters').classList.contains('show') ?
+                    '<i class="fas fa-sliders-h"></i> Hide Advanced Filters' :
+                    '<i class="fas fa-sliders-h"></i> Advanced Filters';
+            });
+
+            // Filter buttons
+            document.getElementById('applyFilters').addEventListener('click', loadProfiles);
+            document.getElementById('resetFilters').addEventListener('click', resetFilters);
+
+            // Cleanliness slider
+            document.getElementById('cleanliness').addEventListener('input', function() {
+                document.getElementById('cleanlinessValue').textContent = this.value;
+            });
+
+            // Photo upload
+            document.getElementById('profilePhotoUpload').addEventListener('click', function() {
+                document.getElementById('profilePhotoInput').click();
+            });
+
+            document.getElementById('profilePhotoInput').addEventListener('change', handlePhotoUpload);
+
+            // Profile form submit
+            document.getElementById('profileForm').addEventListener('submit', saveProfile);
+
+            // Cancel profile edit
+            document.getElementById('cancelProfileEdit').addEventListener('click', function() {
+                if (confirm('Discard changes?')) {
+                    loadUserProfile();
+                }
+            });
+
+            // Modal close buttons
+            document.getElementById('closeProfileModal').addEventListener('click', function() {
+                document.getElementById('profileDetailModal').classList.remove('show');
+            });
+
+            document.getElementById('closeConnectionModal').addEventListener('click', function() {
+                document.getElementById('connectionModal').classList.remove('show');
+            });
+
+            document.getElementById('cancelConnectionRequest').addEventListener('click', function() {
+                document.getElementById('connectionModal').classList.remove('show');
+            });
+
+            document.getElementById('sendConnectionRequest').addEventListener('click', sendConnectionRequest);
+
+            // Close modals on outside click
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('show');
+                }
+            });
+
+            // Load user profile when profile tab is opened
+            document.querySelector('[data-tab="profile"]').addEventListener('click', loadUserProfile);
+            
+            // Load matches when matches tab is opened
+            document.querySelector('[data-tab="matches"]').addEventListener('click', loadMatchesAndRequests);
+        }
+
+        // ===== PROFILE MANAGEMENT =====
+        function loadUserProfile() {
+            const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+            if (!currentUser) return;
+
+            document.getElementById('fullName').value = currentUser.fullName || '';
+            document.getElementById('age').value = currentUser.age || '';
+            document.getElementById('gender').value = currentUser.gender || '';
+            document.getElementById('department').value = currentUser.department || '';
+            document.getElementById('level').value = currentUser.level || '';
+            document.getElementById('bio').value = currentUser.bio || '';
+            document.getElementById('sleepSchedule').value = currentUser.sleepSchedule || '';
+            document.getElementById('studyHabit').value = currentUser.studyHabit || '';
+            document.getElementById('cleanliness').value = currentUser.cleanliness || 3;
+            document.getElementById('cleanlinessValue').textContent = currentUser.cleanliness || 3;
+            document.getElementById('guestPreference').value = currentUser.guestPreference || '';
+            document.getElementById('smoking').value = currentUser.smoking || '';
+            document.getElementById('drinking').value = currentUser.drinking || '';
+            document.getElementById('dietary').value = currentUser.dietary || '';
+            document.getElementById('religion').value = currentUser.religion || '';
+            document.getElementById('preferredGender').value = currentUser.preferredGender || 'No Preference';
+            document.getElementById('budgetMin').value = currentUser.budgetMin || '';
+            document.getElementById('budgetMax').value = currentUser.budgetMax || '';
+            document.getElementById('preferredLocation').value = currentUser.preferredLocation || '';
+            document.getElementById('moveInDate').value = currentUser.moveInDate || '';
+
+            // Handle multiple selects
+            if (currentUser.hobbies) {
+                Array.from(document.getElementById('hobbies').options).forEach(option => {
+                    option.selected = currentUser.hobbies.includes(option.value);
+                });
+            }
+            
+            if (currentUser.musicGenres) {
+                Array.from(document.getElementById('musicGenres').options).forEach(option => {
+                    option.selected = currentUser.musicGenres.includes(option.value);
+                });
+            }
+            
+            if (currentUser.sports) {
+                Array.from(document.getElementById('sports').options).forEach(option => {
+                    option.selected = currentUser.sports.includes(option.value);
+                });
+            }
+            
+            if (currentUser.languages) {
+                Array.from(document.getElementById('languages').options).forEach(option => {
+                    option.selected = currentUser.languages.includes(option.value);
+                });
+            }
+
+            // Deal breakers
+            document.querySelectorAll('#profileForm input[type="checkbox"]').forEach(cb => {
+                cb.checked = currentUser.dealBreakers ? currentUser.dealBreakers.includes(cb.value) : false;
+            });
+
+            // Photo
+            if (currentUser.photo) {
+                document.getElementById('profilePreviewImage').src = currentUser.photo;
+                document.getElementById('profilePreviewImage').style.display = 'block';
+                document.getElementById('profileDefaultPreview').style.display = 'none';
+            }
+        }
+
+        function saveProfile(e) {
+            e.preventDefault();
+
+            const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+            if (!currentUser) return;
+
+            // Get form data
+            const updatedProfile = {
+                ...currentUser,
+                fullName: document.getElementById('fullName').value,
+                age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                department: document.getElementById('department').value,
+                level: document.getElementById('level').value,
+                bio: document.getElementById('bio').value,
+                sleepSchedule: document.getElementById('sleepSchedule').value,
+                studyHabit: document.getElementById('studyHabit').value,
+                cleanliness: parseInt(document.getElementById('cleanliness').value),
+                guestPreference: document.getElementById('guestPreference').value,
+                smoking: document.getElementById('smoking').value,
+                drinking: document.getElementById('drinking').value,
+                dietary: document.getElementById('dietary').value,
+                religion: document.getElementById('religion').value,
+                preferredGender: document.getElementById('preferredGender').value,
+                budgetMin: parseInt(document.getElementById('budgetMin').value),
+                budgetMax: parseInt(document.getElementById('budgetMax').value),
+                preferredLocation: document.getElementById('preferredLocation').value,
+                moveInDate: document.getElementById('moveInDate').value,
+                hobbies: Array.from(document.getElementById('hobbies').selectedOptions).map(o => o.value),
+                musicGenres: Array.from(document.getElementById('musicGenres').selectedOptions).map(o => o.value),
+                sports: Array.from(document.getElementById('sports').selectedOptions).map(o => o.value),
+                languages: Array.from(document.getElementById('languages').selectedOptions).map(o => o.value),
+                dealBreakers: Array.from(document.querySelectorAll('#profileForm input[type="checkbox"]:checked')).map(cb => cb.value)
+            };
+
+            // Save to localStorage
+            localStorage.setItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER, JSON.stringify(updatedProfile));
+
+            // Update in profiles list
+            const profiles = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.PROFILES)) || [];
+            const existingIndex = profiles.findIndex(p => p.id === currentUser.id);
+            
+            if (existingIndex >= 0) {
+                profiles[existingIndex] = updatedProfile;
+            } else {
+                profiles.push(updatedProfile);
+            }
+            
+            localStorage.setItem(ROOMMATE_STORAGE_KEYS.PROFILES, JSON.stringify(profiles));
+
+            showNotification('Profile saved successfully!', 'success');
+            
+            // Switch to find tab
+            document.querySelector('[data-tab="find"]').click();
+        }
+
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                showNotification('File size must be less than 5MB', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePreviewImage').src = e.target.result;
+                document.getElementById('profilePreviewImage').style.display = 'block';
+                document.getElementById('profileDefaultPreview').style.display = 'none';
+                
+                // Save photo to current user
+                const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+                if (currentUser) {
+                    currentUser.photo = e.target.result;
+                    localStorage.setItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER, JSON.stringify(currentUser));
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ===== FIND ROOMMATES =====
+        function loadProfiles() {
+            const profilesGrid = document.getElementById('profilesGrid');
+            const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+            
+            let profiles = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.PROFILES)) || [];
+            
+            // Remove current user from list
+            profiles = profiles.filter(p => p.id !== currentUser?.id);
+            
+            // Apply filters
+            profiles = applyFilters(profiles);
+            
+            // Calculate compatibility
+            profiles = profiles.map(profile => ({
+                ...profile,
+                compatibility: calculateCompatibility(currentUser, profile)
+            }));
+            
+            // Sort by compatibility
+            profiles.sort((a, b) => b.compatibility - a.compatibility);
+            
+            // Render profiles
+            if (profiles.length === 0) {
+                profilesGrid.innerHTML = `
+                    <div style="text-align: center; padding: 60px; grid-column: 1/-1;">
+                        <i class="fas fa-users" style="font-size: 60px; color: var(--gray); margin-bottom: 20px;"></i>
+                        <h3 style="margin-bottom: 10px;">No profiles found</h3>
+                        <p style="color: var(--gray);">Try adjusting your filters or check back later.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            profilesGrid.innerHTML = profiles.map(profile => `
+                <div class="profile-card" onclick="viewProfile('${profile.id}')">
+                    <div class="profile-card-header">
+                        <div class="profile-avatar">
+                            ${profile.photo ? 
+                                `<img src="${profile.photo}" alt="${profile.fullName}">` : 
+                                `<div class="default-avatar">${profile.fullName.charAt(0)}</div>`
+                            }
+                        </div>
+                        <div class="match-badge ${getMatchClass(profile.compatibility)}">
+                            ★ ${profile.compatibility}% Match
+                        </div>
+                    </div>
+                    <div class="profile-card-body">
+                        <h3 class="profile-name">${profile.fullName}, ${profile.age}</h3>
+                        <div class="profile-details">
+                            ${profile.department} | ${profile.level}
+                        </div>
+                        <div class="profile-tags">
+                            <span class="tag"><i class="fas fa-moon"></i> ${profile.sleepSchedule}</span>
+                            <span class="tag"><i class="fas fa-broom"></i> ${profile.cleanliness}/5</span>
+                            <span class="tag"><i class="fas fa-glass-cheers"></i> ${profile.guestPreference}</span>
+                        </div>
+                        <p class="profile-bio">${profile.bio.substring(0, 100)}${profile.bio.length > 100 ? '...' : ''}</p>
+                        <div class="profile-actions" onclick="event.stopPropagation()">
+                            <button class="btn btn-primary" onclick="openConnectionModal('${profile.id}')">
+                                <i class="fas fa-handshake"></i> Connect
+                            </button>
+                            <button class="btn btn-outline" onclick="viewProfile('${profile.id}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters(profiles) {
+            const gender = document.getElementById('genderFilter').value;
+            const budget = document.getElementById('budgetFilter').value;
+            const level = document.getElementById('levelFilter').value;
+            const sleep = document.getElementById('sleepFilter').value;
+            const study = document.getElementById('studyFilter').value;
+            const clean = document.getElementById('cleanFilter').value;
+            const smoking = document.getElementById('smokingFilter').value;
+            const drinking = document.getElementById('drinkingFilter').value;
+            const guest = document.getElementById('guestFilter').value;
+
+            return profiles.filter(profile => {
+                if (gender && profile.gender !== gender) return false;
+                if (level && profile.level !== level) return false;
+                if (sleep && profile.sleepSchedule !== sleep) return false;
+                if (study && profile.studyHabit !== study) return false;
+                if (clean && profile.cleanliness !== parseInt(clean)) return false;
+                if (smoking && profile.smoking !== smoking) return false;
+                if (drinking && profile.drinking !== drinking) return false;
+                if (guest && profile.guestPreference !== guest) return false;
+                
+                if (budget) {
+                    const budgetNum = parseInt(budget);
+                    if (budgetNum === 50000 && profile.budgetMin > 50000) return false;
+                    if (budgetNum === 100000 && (profile.budgetMin > 100000 || profile.budgetMax < 50000)) return false;
+                    if (budgetNum === 150000 && (profile.budgetMin > 150000 || profile.budgetMax < 100000)) return false;
+                    if (budgetNum === 200000 && (profile.budgetMin > 200000 || profile.budgetMax < 150000)) return false;
+                    if (budgetNum === 250000 && profile.budgetMax < 200000) return false;
+                }
+                
+                return true;
+            });
+        }
+
+        function resetFilters() {
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('budgetFilter').value = '';
+            document.getElementById('levelFilter').value = '';
+            document.getElementById('sleepFilter').value = '';
+            document.getElementById('studyFilter').value = '';
+            document.getElementById('cleanFilter').value = '';
+            document.getElementById('smokingFilter').value = '';
+            document.getElementById('drinkingFilter').value = '';
+            document.getElementById('guestFilter').value = '';
+            loadProfiles();
+        }
+
+        function calculateCompatibility(user, profile) {
+            if (!user) return 50; // Default if no user
+            
+            let score = 0;
+            let total = 0;
+
+            // Sleep schedule (15 points)
+            total += 15;
+            if (user.sleepSchedule === profile.sleepSchedule) score += 15;
+            else if (user.sleepSchedule === 'Flexible' || profile.sleepSchedule === 'Flexible') score += 10;
+            else score += 5;
+
+            // Cleanliness (10 points)
+            total += 10;
+            const cleanDiff = Math.abs(user.cleanliness - profile.cleanliness);
+            if (cleanDiff === 0) score += 10;
+            else if (cleanDiff === 1) score += 7;
+            else if (cleanDiff === 2) score += 4;
+            else score += 1;
+
+            // Study habit (10 points)
+            total += 10;
+            if (user.studyHabit === profile.studyHabit) score += 10;
+            else if (user.studyHabit === 'Mixed' || profile.studyHabit === 'Mixed') score += 5;
+
+            // Guest preference (5 points)
+            total += 5;
+            if (user.guestPreference === profile.guestPreference) score += 5;
+
+            // Budget overlap (15 points)
+            total += 15;
+            const userMin = user.budgetMin || 0;
+            const userMax = user.budgetMax || 999999;
+            const profileMin = profile.budgetMin || 0;
+            const profileMax = profile.budgetMax || 999999;
+            
+            if (userMax >= profileMin && profileMax >= userMin) {
+                score += 15; // Overlapping budgets
+            } else {
+                const diff = Math.min(
+                    Math.abs(userMax - profileMin),
+                    Math.abs(profileMax - userMin)
+                );
+                if (diff < 20000) score += 10;
+                else if (diff < 50000) score += 5;
+            }
+
+            // Gender preference (5 points)
+            total += 5;
+            if (user.preferredGender === 'No Preference' || profile.preferredGender === 'No Preference' ||
+                user.preferredGender === profile.gender || profile.preferredGender === user.gender) {
+                score += 5;
+            }
+
+            // Smoking/Drinking compatibility (10 points)
+            total += 10;
+            if (user.smoking === profile.smoking && user.drinking === profile.drinking) {
+                score += 10;
+            } else if (user.smoking !== 'Yes' && profile.smoking !== 'Yes' &&
+                       user.drinking !== 'Yes' && profile.drinking !== 'Yes') {
+                score += 7;
+            }
+
+            // Interests (10 points)
+            total += 10;
+            const userHobbies = new Set(user.hobbies || []);
+            const profileHobbies = new Set(profile.hobbies || []);
+            const commonHobbies = [...userHobbies].filter(h => profileHobbies.has(h)).length;
+            score += Math.min(commonHobbies * 2, 10);
+
+            // Department (5 points)
+            total += 5;
+            if (user.department === profile.department) score += 5;
+            else if (user.department.split(' ')[0] === profile.department.split(' ')[0]) score += 3;
+
+            // Level (5 points)
+            total += 5;
+            const userLevel = parseInt(user.level);
+            const profileLevel = parseInt(profile.level);
+            if (userLevel === profileLevel) score += 5;
+            else if (Math.abs(userLevel - profileLevel) === 100) score += 3;
+
+            // Age (5 points)
+            total += 5;
+            const ageDiff = Math.abs(user.age - profile.age);
+            if (ageDiff <= 2) score += 5;
+            else if (ageDiff <= 4) score += 3;
+
+            // Deal breakers (5 points)
+            total += 5;
+            const userDealBreakers = new Set(user.dealBreakers || []);
+            const profileDealBreakers = new Set(profile.dealBreakers || []);
+            
+            let dealBreakerPenalty = 0;
+            if (userDealBreakers.has(profile.smoking)) dealBreakerPenalty += 2;
+            if (userDealBreakers.has(profile.drinking)) dealBreakerPenalty += 2;
+            if (profileDealBreakers.has(user.smoking)) dealBreakerPenalty += 2;
+            if (profileDealBreakers.has(user.drinking)) dealBreakerPenalty += 2;
+            
+            score += Math.max(0, 5 - dealBreakerPenalty);
+
+            return Math.round((score / total) * 100);
+        }
+
+        function getMatchClass(score) {
+            if (score >= 85) return 'match-high';
+            if (score >= 70) return 'match-good';
+            return 'match-ok';
+        }
+
+        // ===== PROFILE VIEWING =====
+        function viewProfile(profileId) {
+            const profiles = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.PROFILES)) || [];
+            const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+            const profile = profiles.find(p => p.id === profileId);
+            
+            if (!profile) return;
+
+            const compatibility = calculateCompatibility(currentUser, profile);
+
+            const content = `
+                <div class="profile-detail-header">
+                    <div class="detail-avatar">
+                        ${profile.photo ? 
+                            `<img src="${profile.photo}" alt="${profile.fullName}" style="width:100%; height:100%; object-fit:cover;">` : 
+                            profile.fullName.charAt(0)
+                        }
+                    </div>
+                    <div class="detail-info">
+                        <h2>${profile.fullName}, ${profile.age}</h2>
+                        <p><i class="fas fa-graduation-cap"></i> ${profile.department} | ${profile.level}</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Looking in: ${profile.preferredLocation || 'Anywhere'}</p>
+                        <p><i class="fas fa-calendar"></i> Move-in: ${profile.moveInDate || 'Flexible'}</p>
+                    </div>
+                </div>
+
+                <div class="compatibility-meter">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <strong>Compatibility with you</strong>
+                        <span style="font-size: 20px; font-weight: 700; color: var(--primary);">${compatibility}%</span>
+                    </div>
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: ${compatibility}%;"></div>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4><i class="fas fa-user"></i> About Me</h4>
+                    <p style="line-height: 1.6; color: var(--gray);">${profile.bio}</p>
+                </div>
+
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <strong>Sleep Schedule</strong>
+                        <span>${profile.sleepSchedule}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Study Habit</strong>
+                        <span>${profile.studyHabit}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Cleanliness</strong>
+                        <span>${profile.cleanliness}/5</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Guest Preference</strong>
+                        <span>${profile.guestPreference}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Smoking</strong>
+                        <span>${profile.smoking}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Drinking</strong>
+                        <span>${profile.drinking}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Dietary</strong>
+                        <span>${profile.dietary || 'No preference'}</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Religion</strong>
+                        <span>${profile.religion || 'Not specified'}</span>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4><i class="fas fa-heart"></i> Interests & Hobbies</h4>
+                    <div class="interests-tags">
+                        ${(profile.hobbies || []).map(h => `<span class="interest-tag">${h}</span>`).join('')}
+                        ${(profile.musicGenres || []).map(h => `<span class="interest-tag"><i class="fas fa-music"></i> ${h}</span>`).join('')}
+                        ${(profile.sports || []).map(h => `<span class="interest-tag"><i class="fas fa-futbol"></i> ${h}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4><i class="fas fa-language"></i> Languages</h4>
+                    <div class="interests-tags">
+                        ${(profile.languages || []).map(l => `<span class="interest-tag">${l}</span>`).join('')}
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Deal Breakers</h4>
+                    <div class="interests-tags">
+                        ${(profile.dealBreakers || []).map(d => 
+                            `<span class="interest-tag" style="background: #fee2e2; color: #ef4444; border-color: #fecaca;">
+                                <i class="fas fa-times"></i> ${d}
+                            </span>`
+                        ).join('')}
+                        ${(!profile.dealBreakers || profile.dealBreakers.length === 0) ? 
+                            '<span class="interest-tag">None specified</span>' : ''}
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button class="btn btn-primary" style="flex: 1;" onclick="openConnectionModal('${profile.id}')">
+                        <i class="fas fa-handshake"></i> Send Connection Request
+                    </button>
+                    <button class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('profileDetailModal').classList.remove('show')">
+                        Close
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('profileDetailContent').innerHTML = content;
+            document.getElementById('profileDetailModal').classList.add('show');
+        }
+
+        // ===== CONNECTION REQUESTS =====
+        let currentConnectionProfileId = null;
+
+        function openConnectionModal(profileId) {
+            const profiles = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.PROFILES)) || [];
+            const profile = profiles.find(p => p.id === profileId);
+            
+            if (!profile) return;
+
+            currentConnectionProfileId = profileId;
+            
+            document.getElementById('connectionProfileInfo').innerHTML = `
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; font-size: 32px; font-weight: 700;">
+                    ${profile.photo ? `<img src="${profile.photo}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">` : profile.fullName.charAt(0)}
+                </div>
+                <h4>${profile.fullName}</h4>
+                <p style="color: var(--gray);">${profile.department} | ${profile.level}</p>
+            `;
+            
+            document.getElementById('connectionModal').classList.add('show');
+        }
+
+        function sendConnectionRequest() {
+            if (!currentConnectionProfileId) return;
+
+            const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+            const message = document.getElementById('connectionMessage').value;
+
+            const request = {
+                id: 'REQ' + Date.now(),
+                fromUserId: currentUser.id,
+                toUserId: currentConnectionProfileId,
+                fromName: currentUser.fullName,
+                toName: getProfileName(currentConnectionProfileId),
+                message: message,
+                status: 'pending',
+                sentAt: new Date().toISOString(),
+                expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+            };
+
+            const requests = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.REQUESTS)) || [];
+            requests.push(request);
+            localStorage.setItem(ROOMMATE_STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
+
+            document.getElementById('connectionModal').classList.remove('show');
+            document.getElementById('connectionMessage').value = '';
+            
+            showNotification('Connection request sent!', 'success');
+            
+            // Switch to matches tab
+            document.querySelector('[data-tab="matches"]').click();
+        }
+
+        function getProfileName(profileId) {
+            const profiles = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.PROFILES)) || [];
+            const profile = profiles.find(p => p.id === profileId);
+            return profile ? profile.fullName : 'Unknown';
+        }
+
+        // ===== MATCHES AND REQUESTS =====
+        function loadMatchesAndRequests() {
+            const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+            const requests = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.REQUESTS)) || [];
+            
+            // Pending requests (received)
+            const pendingRequests = requests.filter(r => r.toUserId === currentUser.id && r.status === 'pending');
+            renderPendingRequests(pendingRequests);
+            
+            // Sent requests
+            const sentRequests = requests.filter(r => r.fromUserId === currentUser.id && r.status === 'pending');
+            renderSentRequests(sentRequests);
+            
+            // Matches (accepted requests)
+            const matches = requests.filter(r => 
+                (r.fromUserId === currentUser.id || r.toUserId === currentUser.id) && 
+                r.status === 'accepted'
+            );
+            renderMatches(matches);
+        }
+
+        function renderPendingRequests(requests) {
+            const container = document.getElementById('pendingRequests');
+            
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-inbox" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                        <p style="color: var(--gray);">No pending requests</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = requests.map(req => `
+                <div class="request-item">
+                    <div class="request-avatar">${req.fromName.charAt(0)}</div>
+                    <div class="request-info">
+                        <h4>${req.fromName}</h4>
+                        <p>${req.message || 'Would like to connect as roommates!'}</p>
+                        <div class="request-meta">
+                            <span><i class="far fa-clock"></i> ${timeAgo(req.sentAt)}</span>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-primary" onclick="acceptRequest('${req.id}')">
+                            <i class="fas fa-check"></i> Accept
+                        </button>
+                        <button class="btn btn-secondary" onclick="declineRequest('${req.id}')">
+                            <i class="fas fa-times"></i> Decline
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderSentRequests(requests) {
+            const container = document.getElementById('sentRequests');
+            
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-paper-plane" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                        <p style="color: var(--gray);">No sent requests</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = requests.map(req => `
+                <div class="request-item">
+                    <div class="request-avatar">${req.toName.charAt(0)}</div>
+                    <div class="request-info">
+                        <h4>${req.toName}</h4>
+                        <p>${req.message || 'Connection request sent'}</p>
+                        <div class="request-meta">
+                            <span><i class="far fa-clock"></i> ${timeAgo(req.sentAt)}</span>
+                            <span class="status-pending">Pending</span>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn btn-secondary" onclick="cancelRequest('${req.id}')">
+                            <i class="fas fa-ban"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMatches(matches) {
+            const container = document.getElementById('matchesList');
+            
+            if (matches.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-handshake" style="font-size: 48px; color: var(--gray); margin-bottom: 15px;"></i>
+                        <p style="color: var(--gray);">No matches yet. Send some requests!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = matches.map(match => {
+                const currentUser = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.CURRENT_USER));
+                const otherPersonId = match.fromUserId === currentUser.id ? match.toUserId : match.fromUserId;
+                const otherPersonName = match.fromUserId === currentUser.id ? match.toName : match.fromName;
+                
+                return `
+                    <div class="match-item">
+                        <div class="request-avatar">${otherPersonName.charAt(0)}</div>
+                        <div class="request-info">
+                            <h4>${otherPersonName}</h4>
+                            <p><i class="fas fa-check-circle" style="color: #10b981;"></i> Connected</p>
+                            <div class="request-meta">
+                                <span><i class="far fa-clock"></i> Matched ${timeAgo(match.sentAt)}</span>
+                            </div>
+                        </div>
+                        <div class="request-actions">
+                            <button class="btn btn-primary" onclick="viewProfile('${otherPersonId}')">
+                                <i class="fas fa-user"></i> View Profile
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function acceptRequest(requestId) {
+            const requests = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.REQUESTS)) || [];
+            const requestIndex = requests.findIndex(r => r.id === requestId);
+            
+            if (requestIndex >= 0) {
+                requests[requestIndex].status = 'accepted';
+                localStorage.setItem(ROOMMATE_STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
+                showNotification('Request accepted! You are now connected.', 'success');
+                loadMatchesAndRequests();
+            }
+        }
+
+        function declineRequest(requestId) {
+            const requests = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.REQUESTS)) || [];
+            const requestIndex = requests.findIndex(r => r.id === requestId);
+            
+            if (requestIndex >= 0) {
+                requests[requestIndex].status = 'declined';
+                localStorage.setItem(ROOMMATE_STORAGE_KEYS.REQUESTS, JSON.stringify(requests));
+                showNotification('Request declined', 'info');
+                loadMatchesAndRequests();
+            }
+        }
+
+        function cancelRequest(requestId) {
+            if (!confirm('Cancel this request?')) return;
+            
+            const requests = JSON.parse(localStorage.getItem(ROOMMATE_STORAGE_KEYS.REQUESTS)) || [];
+            const filtered = requests.filter(r => r.id !== requestId);
+            localStorage.setItem(ROOMMATE_STORAGE_KEYS.REQUESTS, JSON.stringify(filtered));
+            
+            showNotification('Request cancelled', 'info');
+            loadMatchesAndRequests();
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            return `${Math.floor(seconds / 86400)} days ago`;
+        }
+
+        // Make functions global for onclick handlers
+        window.viewProfile = viewProfile;
+        window.openConnectionModal = openConnectionModal;
+        window.acceptRequest = acceptRequest;
+        window.declineRequest = declineRequest;
+        window.cancelRequest = cancelRequest;
+    </script>
+</body>
+</html>

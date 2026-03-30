@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Properties | UniNext Student Housing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #4cc9f0;
+            --accent: #4CAF50;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-image {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--dark);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px 0;
+        }
+
+        /* Page Title */
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .page-title p {
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .stats-info {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--light-gray);
+            background: white;
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .view-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .view-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .view-btn.active:hover {
+            color: white;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .filters-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .filters-header h3 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark);
+        }
+
+        .filters-header i {
+            transition: transform 0.3s ease;
+        }
+
+        .filters-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .filters-content {
+            transition: all 0.3s ease;
+        }
+
+        .filters-content.collapsed {
+            display: none;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .filter-select, .filter-input {
+            padding: 12px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .price-range {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .price-range input {
+            flex: 1;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .filter-tag {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .filter-tag i {
+            color: var(--gray);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-tag i:hover {
+            color: #dc3545;
+        }
+
+        .clear-all {
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: auto;
+        }
+
+        /* Properties Grid */
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .properties-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .property-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .property-badge.featured {
+            background: #f59e0b;
+        }
+
+        .property-card-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .property-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .property-card:hover .property-card-image img {
+            transform: scale(1.05);
+        }
+
+        .property-card-content {
+            padding: 20px;
+        }
+
+        .property-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .property-card-header h3 {
+            font-size: 18px;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .property-card-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .property-card-location {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .property-card-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .property-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .property-detail i {
+            color: var(--primary);
+            width: 16px;
+        }
+
+        .property-card-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .amenity-tag {
+            background: var(--light);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .property-card-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .btn-view {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--light-gray);
+        }
+
+        .btn-view:hover {
+            background: var(--light-gray);
+        }
+
+        .btn-book {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-book:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-book:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+        }
+
+        /* List View Specific */
+        .properties-grid.list-view .property-card {
+            display: flex;
+            height: 250px;
+        }
+
+        .properties-grid.list-view .property-card-image {
+            width: 300px;
+            height: 100%;
+        }
+
+        .properties-grid.list-view .property-card-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .properties-grid.list-view .property-card-details {
+            border-bottom: none;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            border: 1px solid var(--light-gray);
+            background: white;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-dots {
+            color: var(--gray);
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            grid-column: 1 / -1;
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading p {
+            color: var(--gray);
+            font-size: 18px;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 80px 20px;
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .no-results i {
+            font-size: 80px;
+            color: var(--light-gray);
+            margin-bottom: 20px;
+        }
+
+        .no-results h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .no-results p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--light-gray);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header h3 {
+            font-size: 24px;
+            color: var(--dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: var(--gray);
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        /* Property Detail */
+        .property-gallery {
+            margin-bottom: 30px;
+        }
+
+        .property-main-image {
+            width: 100%;
+            height: 400px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .property-main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-thumbnails {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .property-thumbnail {
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .property-thumbnail.active,
+        .property-thumbnail:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .property-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .property-info {
+            margin-bottom: 30px;
+        }
+
+        .property-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .property-title h2 {
+            font-size: 28px;
+            color: var(--dark);
+        }
+
+        .property-price-large {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .property-meta {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-item i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .meta-item span {
+            display: block;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .meta-item small {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .property-section {
+            margin-bottom: 30px;
+        }
+
+        .property-section h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: var(--radius);
+        }
+
+        .amenity-item i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--light-gray);
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius);
+            color: white;
+            font-weight: 500;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.success { background: var(--accent); }
+        .notification.error { background: #dc3545; }
+        .notification.info { background: var(--primary); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Back to Top */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: var(--shadow-lg);
+            transition: var(--transition);
+            z-index: 99;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .properties-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            .property-meta {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .amenities-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .properties-grid.list-view .property-card {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .properties-grid.list-view .property-card-image {
+                width: 100%;
+                height: 200px;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .property-thumbnails {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .property-main-image {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .property-thumbnails {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">
+                    <img src="uninext.png" alt="UniNext Logo" class="logo-image">
+                    <span>UniNext</span>
+                </a>
+                
+                <div class="header-actions">
+                    <a href="index.html" class="btn btn-outline">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="roommate-match.html" class="btn btn-outline">
+                        <i class="fas fa-user-friends"></i> Find Roommate
+                    </a>
+                    <button class="btn btn-primary" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Page Title -->
+            <div class="page-title">
+                <h1>All Available Properties</h1>
+                <p>Browse through our complete list of verified student accommodations</p>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stats-info">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalProperties">0</div>
+                        <div class="stat-label">Total Properties</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="availableRooms">0</div>
+                        <div class="stat-label">Available Rooms</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="cities">0</div>
+                        <div class="stat-label">Locations</div>
+                    </div>
+                </div>
+                <div class="view-options">
+                    <button class="view-btn active" id="gridView" title="Grid View">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button class="view-btn" id="listView" title="List View">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-header" id="toggleFilters">
+                    <h3>
+                        <i class="fas fa-filter"></i>
+                        Filter Properties
+                    </h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                
+                <div class="filters-content" id="filtersContent">
+                    <!-- Active Filters -->
+                    <div class="active-filters" id="activeFilters" style="display: none;">
+                        <span class="filter-tag" id="filterTags"></span>
+                        <span class="clear-all" id="clearAllFilters">Clear All</span>
+                    </div>
+
+                    <!-- Filter Rows -->
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Location</label>
+                            <select class="filter-select" id="locationFilter">
+                                <option value="">All Locations</option>
+                                <option value="Akoka">Akoka</option>
+                                <option value="Yaba">Yaba</option>
+                                <option value="Surulere">Surulere</option>
+                                <option value="Gbagada">Gbagada</option>
+                                <option value="Maryland">Maryland</option>
+                                <option value="Ikeja">Ikeja</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Property Type</label>
+                            <select class="filter-select" id="typeFilter">
+                                <option value="">All Types</option>
+                                <option value="Shared Room">Shared Room</option>
+                                <option value="Private Room">Private Room</option>
+                                <option value="Studio Apartment">Studio Apartment</option>
+                                <option value="1-Bedroom Flat">1-Bedroom Flat</option>
+                                <option value="2-Bedroom Flat">2-Bedroom Flat</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Gender Preference</label>
+                            <select class="filter-select" id="genderFilter">
+                                <option value="">Any Gender</option>
+                                <option value="Male Only">Male Only</option>
+                                <option value="Female Only">Female Only</option>
+                                <option value="Mixed">Mixed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Price Range (₦/year)</label>
+                            <div class="price-range">
+                                <input type="number" class="filter-input" id="minPrice" placeholder="Min" min="0" step="1000">
+                                <span>-</span>
+                                <input type="number" class="filter-input" id="maxPrice" placeholder="Max" min="0" step="1000">
+                            </div>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Minimum Rooms Available</label>
+                            <select class="filter-select" id="roomsFilter">
+                                <option value="0">Any</option>
+                                <option value="1">1+ rooms</option>
+                                <option value="2">2+ rooms</option>
+                                <option value="3">3+ rooms</option>
+                                <option value="5">5+ rooms</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label>Sort By</label>
+                            <select class="filter-select" id="sortFilter">
+                                <option value="default">Default</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="name">Name: A to Z</option>
+                                <option value="available">Most Available</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button class="btn btn-secondary" id="resetFilters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                        <button class="btn btn-primary" id="applyFilters">
+                            <i class="fas fa-search"></i> Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties Grid -->
+            <div class="properties-grid" id="propertiesGrid">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading properties...</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <!-- Generated by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Property Details Modal -->
+    <div class="modal" id="propertyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Property Details</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="closeModalBtn">Close</button>
+                <button class="btn btn-primary" id="bookFromModal">Book Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3>Login Required</h3>
+                <button class="modal-close" id="closeLoginModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <i class="fas fa-lock" style="font-size: 60px; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h4>Please Login to Book</h4>
+                    <p style="color: var(--gray);">You need to be logged in to book a property.</p>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <button class="btn btn-primary" style="flex: 1;" onclick="window.location.href='index.html#login'">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="btn btn-outline" style="flex: 1;" onclick="window.location.href='index.html#signup'">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // ===== DATA =====
+        const STORAGE_KEYS = {
+            PROPERTIES: 'uniNextProperties',
+            CURRENT_USER: 'uniNextCurrentUser'
+        };
+
+        // Sample properties (expanded)
+        const SAMPLE_PROPERTIES = [
+            {
+                id: 'prop-1',
+                name: 'University View Apartments',
+                location: 'Akoka, Lagos',
+                type: 'Shared Room',
+                price: 150000,
+                availableRooms: 3,
+                gender: 'Mixed',
+                featured: true,
+                images: [
+                    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', '24/7 Security', 'Laundry', 'Study Room', 'Kitchen', 'Parking'],
+                description: 'Modern student accommodation with high-speed internet and 24/7 security. Located close to the university campus with easy access to transportation.',
+                bedrooms: 2,
+                bathrooms: 2,
+                size: '80m²'
+            },
+            {
+                id: 'prop-2',
+                name: 'Campus Gardens Residence',
+                location: 'Yaba, Lagos',
+                type: 'Private Room',
+                price: 200000,
+                availableRooms: 1,
+                gender: 'Mixed',
+                featured: true,
+                images: [
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Air Conditioning', 'Kitchen', 'Gym', 'Swimming Pool', 'Study Area'],
+                description: 'Luxury student residence with private rooms and premium amenities. Perfect for students who value comfort and privacy.',
+                bedrooms: 1,
+                bathrooms: 1,
+                size: '35m²'
+            },
+            {
+                id: 'prop-3',
+                name: 'Student Comfort Hostel',
+                location: 'Surulere, Lagos',
+                type: 'Shared Room',
+                price: 120000,
+                availableRooms: 4,
+                gender: 'Female Only',
+                featured: false,
+                images: [
+                    'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Study Area', 'Common Room', '24/7 Security', 'Cafeteria'],
+                description: 'Affordable and comfortable female-only hostel with a supportive community environment.',
+                bedrooms: 4,
+                bathrooms: 2,
+                size: '120m²'
+            },
+            {
+                id: 'prop-4',
+                name: 'Heritage Student Lodge',
+                location: 'Gbagada, Lagos',
+                type: 'Shared Room',
+                price: 90000,
+                availableRooms: 6,
+                gender: 'Mixed',
+                featured: false,
+                images: [
+                    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Study Room', 'Security', 'Water Supply'],
+                description: 'Budget-friendly accommodation with basic amenities. Great for students on a tight budget.',
+                bedrooms: 6,
+                bathrooms: 3,
+                size: '150m²'
+            },
+            {
+                id: 'prop-5',
+                name: 'Executive Studio Apartments',
+                location: 'Ikeja, Lagos',
+                type: 'Studio Apartment',
+                price: 300000,
+                availableRooms: 2,
+                gender: 'Mixed',
+                featured: true,
+                images: [
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Air Conditioning', 'Modern Kitchen', 'Gym', 'Pool', 'Parking', '24/7 Security'],
+                description: 'Luxury studio apartments for students who want independence and comfort. Fully furnished with modern appliances.',
+                bedrooms: 1,
+                bathrooms: 1,
+                size: '45m²'
+            },
+            {
+                id: 'prop-6',
+                name: 'Peace Haven Hostel',
+                location: 'Maryland, Lagos',
+                type: 'Shared Room',
+                price: 110000,
+                availableRooms: 5,
+                gender: 'Male Only',
+                featured: false,
+                images: [
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Study Area', 'Common Room', 'Security', 'Generator'],
+                description: 'Quiet and peaceful male-only hostel with a conducive environment for studying.',
+                bedrooms: 5,
+                bathrooms: 3,
+                size: '130m²'
+            },
+            {
+                id: 'prop-7',
+                name: 'Scholars Inn',
+                location: 'Akoka, Lagos',
+                type: 'Private Room',
+                price: 180000,
+                availableRooms: 2,
+                gender: 'Mixed',
+                featured: false,
+                images: [
+                    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Study Desk', 'Wardrobe', 'Security', 'Water'],
+                description: 'Comfortable private rooms perfect for focused students who need their own space.',
+                bedrooms: 1,
+                bathrooms: 1,
+                size: '25m²'
+            },
+            {
+                id: 'prop-8',
+                name: 'Campus Edge Apartments',
+                location: 'Yaba, Lagos',
+                type: '2-Bedroom Flat',
+                price: 250000,
+                availableRooms: 2,
+                gender: 'Mixed',
+                featured: true,
+                images: [
+                    'https://images.unsplash.com/photo-1513584684374-8bab748fbf90?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Fully Furnished', 'Kitchen', 'Living Room', 'Parking', 'Security'],
+                description: 'Spacious 2-bedroom flats perfect for groups of friends. Fully furnished with modern amenities.',
+                bedrooms: 2,
+                bathrooms: 2,
+                size: '90m²'
+            },
+            {
+                id: 'prop-9',
+                name: 'Greenfield Hostel',
+                location: 'Surulere, Lagos',
+                type: 'Shared Room',
+                price: 100000,
+                availableRooms: 8,
+                gender: 'Mixed',
+                featured: false,
+                images: [
+                    'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'
+                ],
+                amenities: ['Wi-Fi', 'Study Area', 'Recreation Room', 'Security', 'Cafeteria'],
+                description: 'Large hostel with a vibrant community atmosphere. Great for making friends.',
+                bedrooms: 8,
+                bathrooms: 4,
+                size: '200m²'
+            }
+        ];
+
+        // ===== STATE =====
+        let currentPage = 1;
+        let itemsPerPage = 9;
+        let totalPages = 1;
+        let currentView = 'grid';
+        let allProperties = [];
+        let filteredProperties = [];
+        let currentPropertyId = null;
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeData();
+            setupEventListeners();
+            loadProperties();
+            updateStats();
+            checkLoginStatus();
+        });
+
+        function initializeData() {
+            // Load from localStorage or use sample data
+            const stored = localStorage.getItem(STORAGE_KEYS.PROPERTIES);
+            if (stored) {
+                allProperties = JSON.parse(stored);
+            } else {
+                allProperties = SAMPLE_PROPERTIES;
+                localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(SAMPLE_PROPERTIES));
+            }
+            filteredProperties = [...allProperties];
+        }
+
+        function setupEventListeners() {
+            // Filter toggle
+            document.getElementById('toggleFilters').addEventListener('click', function() {
+                document.getElementById('filtersContent').classList.toggle('collapsed');
+                this.classList.toggle('collapsed');
+            });
+
+            // View toggle
+            document.getElementById('gridView').addEventListener('click', () => switchView('grid'));
+            document.getElementById('listView').addEventListener('click', () => switchView('list'));
+
+            // Filter buttons
+            document.getElementById('applyFilters').addEventListener('click', applyFilters);
+            document.getElementById('resetFilters').addEventListener('click', resetFilters);
+            document.getElementById('clearAllFilters').addEventListener('click', resetFilters);
+
+            // Modal close
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            document.getElementById('closeLoginModal').addEventListener('click', () => {
+                document.getElementById('loginModal').classList.remove('show');
+            });
+
+            // Book from modal
+            document.getElementById('bookFromModal').addEventListener('click', handleModalBooking);
+
+            // Back to top
+            window.addEventListener('scroll', toggleBackToTop);
+            document.getElementById('backToTop').addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                window.location.href = 'index.html#login';
+            });
+
+            // Close modal on outside click
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('show');
+                }
+            });
+        }
+
+        // ===== PROPERTY LOADING =====
+        function loadProperties() {
+            const grid = document.getElementById('propertiesGrid');
+            
+            if (filteredProperties.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-home"></i>
+                        <h3>No Properties Found</h3>
+                        <p>Try adjusting your filters to see more results.</p>
+                        <button class="btn btn-primary" onclick="resetFilters()">
+                            <i class="fas fa-undo"></i> Reset Filters
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate pagination
+            totalPages = Math.ceil(filteredProperties.length / itemsPerPage);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageProperties = filteredProperties.slice(start, end);
+
+            // Render properties
+            grid.innerHTML = pageProperties.map(property => {
+                if (currentView === 'grid') {
+                    return renderGridCard(property);
+                } else {
+                    return renderListCard(property);
+                }
+            }).join('');
+
+            renderPagination();
+        }
+
+        function renderGridCard(property) {
+            const available = property.availableRooms > 0;
+            return `
+                <div class="property-card" onclick="openPropertyModal('${property.id}')">
+                    ${property.featured ? '<div class="property-badge featured">Featured</div>' : ''}
+                    <div class="property-card-image">
+                        <img src="${property.images[0]}" alt="${property.name}" loading="lazy">
+                    </div>
+                    <div class="property-card-content">
+                        <div class="property-card-header">
+                            <h3>${property.name}</h3>
+                            <div class="property-card-price">₦${property.price.toLocaleString()}</div>
+                        </div>
+                        <div class="property-card-location">
+                            <i class="fas fa-map-marker-alt"></i> ${property.location}
+                        </div>
+                        <div class="property-card-details">
+                            <span class="property-detail">
+                                <i class="fas fa-door-closed"></i> ${property.type}
+                            </span>
+                            <span class="property-detail">
+                                <i class="fas fa-bed"></i> ${property.availableRooms} left
+                            </span>
+                            <span class="property-detail">
+                                <i class="fas fa-${property.gender === 'Male Only' ? 'mars' : property.gender === 'Female Only' ? 'venus' : 'users'}"></i> 
+                                ${property.gender}
+                            </span>
+                        </div>
+                        <div class="property-card-amenities">
+                            ${property.amenities.slice(0, 3).map(a => `<span class="amenity-tag">${a}</span>`).join('')}
+                            ${property.amenities.length > 3 ? `<span class="amenity-tag">+${property.amenities.length - 3}</span>` : ''}
+                        </div>
+                        <div class="property-card-actions" onclick="event.stopPropagation()">
+                            <button class="btn-card btn-view" onclick="openPropertyModal('${property.id}')">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${available ? 
+                                `<button class="btn-card btn-book" onclick="bookProperty('${property.id}')">
+                                    <i class="fas fa-bookmark"></i> Book
+                                </button>` : 
+                                `<button class="btn-card btn-book" disabled>
+                                    <i class="fas fa-times"></i> Full
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderListCard(property) {
+            const available = property.availableRooms > 0;
+            return `
+                <div class="property-card" onclick="openPropertyModal('${property.id}')">
+                    ${property.featured ? '<div class="property-badge featured">Featured</div>' : ''}
+                    <div class="property-card-image">
+                        <img src="${property.images[0]}" alt="${property.name}" loading="lazy">
+                    </div>
+                    <div class="property-card-content">
+                        <div class="property-card-header">
+                            <h3>${property.name}</h3>
+                            <div class="property-card-price">₦${property.price.toLocaleString()}/year</div>
+                        </div>
+                        <div class="property-card-location">
+                            <i class="fas fa-map-marker-alt"></i> ${property.location}
+                        </div>
+                        <div class="property-card-details">
+                            <span class="property-detail"><i class="fas fa-door-closed"></i> ${property.type}</span>
+                            <span class="property-detail"><i class="fas fa-bed"></i> ${property.availableRooms} rooms left</span>
+                            <span class="property-detail"><i class="fas fa-${property.gender === 'Male Only' ? 'mars' : property.gender === 'Female Only' ? 'venus' : 'users'}"></i> ${property.gender}</span>
+                            <span class="property-detail"><i class="fas fa-ruler-combined"></i> ${property.size}</span>
+                        </div>
+                        <p style="color: var(--gray); margin-bottom: 15px;">${property.description.substring(0, 150)}...</p>
+                        <div class="property-card-amenities">
+                            ${property.amenities.slice(0, 5).map(a => `<span class="amenity-tag">${a}</span>`).join('')}
+                        </div>
+                        <div class="property-card-actions" style="margin-top: 15px;" onclick="event.stopPropagation()">
+                            <button class="btn-card btn-view" onclick="openPropertyModal('${property.id}')">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            ${available ? 
+                                `<button class="btn-card btn-book" onclick="bookProperty('${property.id}')">
+                                    <i class="fas fa-bookmark"></i> Book Now
+                                </button>` : 
+                                `<button class="btn-card btn-book" disabled>
+                                    <i class="fas fa-times"></i> Fully Booked
+                                </button>`
+                            }
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== FILTERS =====
+        function applyFilters() {
+            const location = document.getElementById('locationFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const gender = document.getElementById('genderFilter').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+            const minRooms = document.getElementById('roomsFilter').value;
+            const sortBy = document.getElementById('sortFilter').value;
+
+            filteredProperties = allProperties.filter(prop => {
+                if (location && prop.location !== location) return false;
+                if (type && prop.type !== type) return false;
+                if (gender && prop.gender !== gender) return false;
+                if (minPrice && prop.price < parseInt(minPrice)) return false;
+                if (maxPrice && prop.price > parseInt(maxPrice)) return false;
+                if (minRooms && prop.availableRooms < parseInt(minRooms)) return false;
+                return true;
+            });
+
+            // Apply sorting
+            if (sortBy === 'price-low') {
+                filteredProperties.sort((a, b) => a.price - b.price);
+            } else if (sortBy === 'price-high') {
+                filteredProperties.sort((a, b) => b.price - a.price);
+            } else if (sortBy === 'name') {
+                filteredProperties.sort((a, b) => a.name.localeCompare(b.name));
+            } else if (sortBy === 'available') {
+                filteredProperties.sort((a, b) => b.availableRooms - a.availableRooms);
+            }
+
+            // Show active filters
+            showActiveFilters();
+            
+            // Reset to page 1
+            currentPage = 1;
+            loadProperties();
+            updateStats();
+        }
+
+        function resetFilters() {
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('genderFilter').value = '';
+            document.getElementById('minPrice').value = '';
+            document.getElementById('maxPrice').value = '';
+            document.getElementById('roomsFilter').value = '0';
+            document.getElementById('sortFilter').value = 'default';
+            
+            filteredProperties = [...allProperties];
+            currentPage = 1;
+            loadProperties();
+            updateStats();
+            document.getElementById('activeFilters').style.display = 'none';
+        }
+
+        function showActiveFilters() {
+            const filters = [];
+            const location = document.getElementById('locationFilter').value;
+            const type = document.getElementById('typeFilter').value;
+            const gender = document.getElementById('genderFilter').value;
+            const minPrice = document.getElementById('minPrice').value;
+            const maxPrice = document.getElementById('maxPrice').value;
+
+            if (location) filters.push(`Location: ${location}`);
+            if (type) filters.push(`Type: ${type}`);
+            if (gender) filters.push(`Gender: ${gender}`);
+            if (minPrice) filters.push(`Min: ₦${minPrice}`);
+            if (maxPrice) filters.push(`Max: ₦${maxPrice}`);
+
+            const container = document.getElementById('activeFilters');
+            const tagsContainer = document.getElementById('filterTags');
+
+            if (filters.length > 0) {
+                tagsContainer.innerHTML = filters.map(f => `
+                    <span class="filter-tag">
+                        ${f}
+                        <i class="fas fa-times" onclick="removeFilter('${f.split(':')[0].toLowerCase()}')"></i>
+                    </span>
+                `).join('');
+                container.style.display = 'flex';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        function removeFilter(filterType) {
+            if (filterType.includes('location')) document.getElementById('locationFilter').value = '';
+            if (filterType.includes('type')) document.getElementById('typeFilter').value = '';
+            if (filterType.includes('gender')) document.getElementById('genderFilter').value = '';
+            if (filterType.includes('min')) document.getElementById('minPrice').value = '';
+            if (filterType.includes('max')) document.getElementById('maxPrice').value = '';
+            
+            applyFilters();
+        }
+
+        // ===== VIEW TOGGLE =====
+        function switchView(view) {
+            currentView = view;
+            document.getElementById('gridView').classList.toggle('active', view === 'grid');
+            document.getElementById('listView').classList.toggle('active', view === 'list');
+            
+            const grid = document.getElementById('propertiesGrid');
+            if (view === 'list') {
+                grid.classList.add('list-view');
+            } else {
+                grid.classList.remove('list-view');
+            }
+            
+            loadProperties();
+        }
+
+        // ===== PAGINATION =====
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            let html = '';
+
+            if (totalPages > 1) {
+                // Previous button
+                html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})">
+                    <i class="fas fa-chevron-left"></i>
+                </button>`;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
+                        html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+                    } else if (i === currentPage - 3 || i === currentPage + 3) {
+                        html += `<span class="page-dots">...</span>`;
+                    }
+                }
+
+                // Next button
+                html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})">
+                    <i class="fas fa-chevron-right"></i>
+                </button>`;
+            }
+
+            pagination.innerHTML = html;
+        }
+
+        function changePage(page) {
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            loadProperties();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== STATS =====
+        function updateStats() {
+            document.getElementById('totalProperties').textContent = allProperties.length;
+            
+            const totalRooms = allProperties.reduce((sum, p) => sum + p.availableRooms, 0);
+            document.getElementById('availableRooms').textContent = totalRooms;
+            
+            const uniqueLocations = [...new Set(allProperties.map(p => p.location.split(',')[0].trim()))].length;
+            document.getElementById('cities').textContent = uniqueLocations;
+        }
+
+        // ===== MODAL =====
+        function openPropertyModal(propertyId) {
+            const property = allProperties.find(p => p.id === propertyId);
+            if (!property) return;
+
+            currentPropertyId = propertyId;
+
+            const modalBody = document.getElementById('modalBody');
+            document.getElementById('modalTitle').textContent = property.name;
+
+            modalBody.innerHTML = `
+                <div class="property-gallery">
+                    <div class="property-main-image">
+                        <img src="${property.images[0]}" alt="${property.name}" id="modalMainImage">
+                    </div>
+                    <div class="property-thumbnails">
+                        ${property.images.map((img, index) => `
+                            <div class="property-thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage(this, '${img}')">
+                                <img src="${img}" alt="Thumbnail ${index + 1}">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="property-info">
+                    <div class="property-title">
+                        <h2>${property.name}</h2>
+                        <div class="property-price-large">₦${property.price.toLocaleString()}/year</div>
+                    </div>
+
+                    <div class="property-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${property.location}</span>
+                            <small>Location</small>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-door-closed"></i>
+                            <span>${property.type}</span>
+                            <small>Room Type</small>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-bed"></i>
+                            <span>${property.availableRooms}</span>
+                            <small>Available</small>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-${property.gender === 'Male Only' ? 'mars' : property.gender === 'Female Only' ? 'venus' : 'users'}"></i>
+                            <span>${property.gender}</span>
+                            <small>Gender</small>
+                        </div>
+                    </div>
+
+                    <div class="property-section">
+                        <h4><i class="fas fa-info-circle"></i> Description</h4>
+                        <p style="color: var(--gray); line-height: 1.8;">${property.description}</p>
+                    </div>
+
+                    <div class="property-section">
+                        <h4><i class="fas fa-couch"></i> Amenities</h4>
+                        <div class="amenities-grid">
+                            ${property.amenities.map(a => `
+                                <div class="amenity-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>${a}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="property-section">
+                        <h4><i class="fas fa-home"></i> Room Details</h4>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div style="text-align: center; padding: 15px; background: var(--light); border-radius: var(--radius);">
+                                <i class="fas fa-bed" style="font-size: 24px; color: var(--primary); margin-bottom: 8px;"></i>
+                                <div><strong>${property.bedrooms}</strong> Bedrooms</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: var(--light); border-radius: var(--radius);">
+                                <i class="fas fa-bath" style="font-size: 24px; color: var(--primary); margin-bottom: 8px;"></i>
+                                <div><strong>${property.bathrooms}</strong> Bathrooms</div>
+                            </div>
+                            <div style="text-align: center; padding: 15px; background: var(--light); border-radius: var(--radius);">
+                                <i class="fas fa-ruler-combined" style="font-size: 24px; color: var(--primary); margin-bottom: 8px;"></i>
+                                <div><strong>${property.size}</strong> Size</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('propertyModal').classList.add('show');
+        }
+
+        function changeMainImage(thumbnail, imageSrc) {
+            document.getElementById('modalMainImage').src = imageSrc;
+            document.querySelectorAll('.property-thumbnail').forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('propertyModal').classList.remove('show');
+        }
+
+        // ===== BOOKING =====
+        function bookProperty(propertyId) {
+            const currentUser = getCurrentUser();
+            
+            if (!currentUser) {
+                document.getElementById('loginModal').classList.add('show');
+                return;
+            }
+
+            const property = allProperties.find(p => p.id === propertyId);
+            if (!property || property.availableRooms <= 0) {
+                showNotification('This property is no longer available', 'error');
+                return;
+            }
+
+            // Create booking
+            const booking = {
+                id: 'BOOK-' + Date.now(),
+                propertyId: property.id,
+                propertyName: property.name,
+                studentId: currentUser.id,
+                studentName: currentUser.fullName,
+                amount: property.price,
+                status: 'pending',
+                date: new Date().toISOString()
+            };
+
+            // Save booking (you'll need to implement booking storage)
+            const bookings = JSON.parse(localStorage.getItem('uniNextBookings')) || [];
+            bookings.push(booking);
+            localStorage.setItem('uniNextBookings', JSON.stringify(bookings));
+
+            // Update property availability
+            property.availableRooms -= 1;
+            localStorage.setItem(STORAGE_KEYS.PROPERTIES, JSON.stringify(allProperties));
+
+            showNotification('Booking request submitted successfully!', 'success');
+            closeModal();
+            loadProperties(); // Refresh the grid
+        }
+
+        function handleModalBooking() {
+            if (currentPropertyId) {
+                bookProperty(currentPropertyId);
+            }
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEYS.CURRENT_USER));
+        }
+
+        function checkLoginStatus() {
+            const user = getCurrentUser();
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (user) {
+                loginBtn.innerHTML = '<i class="fas fa-user"></i> ' + user.fullName.split(' ')[0];
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function toggleBackToTop() {
+            const btn = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        }
+
+        // Make functions global for onclick handlers
+        window.openPropertyModal = openPropertyModal;
+        window.changeMainImage = changeMainImage;
+        window.bookProperty = bookProperty;
+        window.changePage = changePage;
+        window.removeFilter = removeFilter;
+        window.resetFilters = resetFilters;
+    </script>
+</body>
+</html>
